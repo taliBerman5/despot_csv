@@ -6,119 +6,139 @@
  */
 
 #include <despot/planner.h>
+#include <iostream>
 
 namespace despot {
+    ofstream myfile;
 
-void Planner::EvaluationLoop(DSPOMDP *model, World* world, Belief* belief,
-		string belief_type, Solver *&solver, Logger *logger,
-		option::Option *options, clock_t main_clock_start, int num_runs,
-		int start_run) {
-	// Run num_runs simulations
-	vector<double> round_rewards(num_runs);
-	for (int round = start_run; round < start_run + num_runs; round++) {
-		round_=round;
-		step_=0;
-		default_out<< endl
-		<< "####################################### Round " << round
-		<< " #######################################" << endl;
-		//Reset world and logger
-		world->Initialize();
-		logger->InitRound(world->GetCurrentState());
+    void Planner::EvaluationLoop(DSPOMDP *model, World* world, Belief* belief,
+                                 string belief_type, Solver *&solver, Logger *logger,
+                                 option::Option *options, clock_t main_clock_start, int num_runs,
+                                 int start_run) {
+        // Run num_runs simulations
+        vector<double> round_rewards(num_runs);
+        for (int round = start_run; round < start_run + num_runs; round++) {
+            round_=round;
+            step_=0;
+            default_out<< endl
+                       << "####################################### Round " << round
+                       << " #######################################" << endl;
+            //Reset world and logger
+            world->Initialize();
+            logger->InitRound(world->GetCurrentState());
 
-		//Reset belief and solver
-		double start_t = get_time_second();
-		delete solver->belief();
-		double end_t = get_time_second();
-		logi << "[Initializer::EvaluationLoop] Deleted old belief in "
-		<< (end_t - start_t) << "s" << endl;
+            //Reset belief and solver
+            double start_t = get_time_second();
+            delete solver->belief();
+            double end_t = get_time_second();
+            logi << "[Initializer::EvaluationLoop] Deleted old belief in "
+                 << (end_t - start_t) << "s" << endl;
 
-		start_t = get_time_second();
-		belief=model->InitialBelief(world->GetCurrentState(), belief_type);
-		end_t = get_time_second();
-		logi << "[Initializer::EvaluationLoop] Created intial belief "
-		<< typeid(*belief).name() << " in " << (end_t - start_t) << "s" << endl;
+            start_t = get_time_second();
+            belief=model->InitialBelief(world->GetCurrentState(), belief_type);
+            end_t = get_time_second();
+            logi << "[Initializer::EvaluationLoop] Created intial belief "
+                 << typeid(*belief).name() << " in " << (end_t - start_t) << "s" << endl;
 
-		solver->belief(belief);
-		logger->belief(belief);
+            solver->belief(belief);
+            logger->belief(belief);
 
-		//start loop
-		PlanningLoop(solver, world, logger);
-		//end loop
+            //start loop
+            PlanningLoop(solver, world, logger);
+            //end loop
 
-		default_out << "Simulation terminated in " << logger->step() << " steps"
-		<< endl;
-		double round_reward = logger->EndRound();
-		round_rewards[round] = round_reward;
-	}
-}
+            default_out << "Simulation terminated in " << logger->step() << " steps"
+                        << endl;
+            double round_reward = logger->EndRound();
 
-int Planner::RunEvaluation(int argc, char *argv[]) {
+            myfile << logger->total_discounted_reward_round() << "/"<<round_reward <<"\n";
+            round_rewards[round] = round_reward;
+            Globals::config.search_depth = 90; //TB TODO: delete
+        }
+    }
 
-	/* =========================
-	 * initialize parameters
-	 * =========================*/
-	string solver_type = ChooseSolver();
-	bool search_solver;
-	int num_runs = 1;
-	string world_type = "pomdp";
-	string belief_type = "DEFAULT";
-	int time_limit = -1;
+    int Planner::RunEvaluation(int argc, char *argv[]) {
 
-	option::Option *options = InitializeParamers(argc, argv, solver_type,
-			search_solver, num_runs, world_type, belief_type, time_limit);
-	if(options==NULL)
-		return 0;
-	clock_t main_clock_start = clock();
+        /* =========================
+         * initialize parameters
+         * =========================*/
+        string solver_type = ChooseSolver();
+        bool search_solver;
+        int num_runs = 1;
+        string world_type = "pomdp";
+        string belief_type = "DEFAULT";
+        int time_limit = -1;
 
-	/* =========================
-	 * initialize model
-	 * =========================*/
-	DSPOMDP *model = InitializeModel(options);
-	assert(model != NULL);
+        option::Option *options = InitializeParamers(argc, argv, solver_type,
+                                                     search_solver, num_runs, world_type, belief_type, time_limit);
+        if(options==NULL)
+            return 0;
+        clock_t main_clock_start = clock();
 
-	/* =========================
-	 * initialize world
-	 * =========================*/
-	World *world = InitializeWorld(world_type, model, options);
-	assert(world != NULL);
+        /* =========================
+         * initialize model
+         * =========================*/
+        DSPOMDP *model = InitializeModel(options);
+        assert(model != NULL);
 
-	/* =========================
-	 * initialize belief
-	 * =========================*/
-	Belief* belief = model->InitialBelief(world->GetCurrentState(), belief_type);
-	assert(belief != NULL);
+        /* =========================
+         * initialize world
+         * =========================*/
+        World *world = InitializeWorld(world_type, model, options);
+        assert(world != NULL);
 
-	/* =========================
-	 * initialize solver
-	 * =========================*/
-	Solver *solver = InitializeSolver(model, belief, solver_type, options);
+        /* =========================
+         * initialize belief
+         * =========================*/
+        Belief* belief = model->InitialBelief(world->GetCurrentState(), belief_type);
+        assert(belief != NULL);
 
-	/* =========================
-	 * initialize logger
-	 * =========================*/
-	Logger *logger = NULL;
-	InitializeLogger(logger, options, model, belief, solver, num_runs,
-			main_clock_start, world, world_type, time_limit, solver_type);
-	//logger->world_seed(world_seed);
+        /* =========================
+         * initialize solver
+         * =========================*/
+        //TB file
+        ofstream rollout_file;
+        string rollout_file_name = solver_type+"_"+typeid(*model).name()+"_rollouts_uniform.csv";
+        rollout_file.open (rollout_file_name);
+        //TB file
 
-	int start_run = 0;
+        Solver *solver = InitializeSolver(model, belief, solver_type, options, &rollout_file);
 
-	/* =========================
-	 * Display parameters
-	 * =========================*/
-	DisplayParameters(options, model);
+        /* =========================
+         * initialize logger
+         * =========================*/
+        Logger *logger = NULL;
+        InitializeLogger(logger, options, model, belief, solver, num_runs,
+                         main_clock_start, world, world_type, time_limit, solver_type);
+        //logger->world_seed(world_seed);
 
-	/* =========================
-	 * run evaluation
-	 * =========================*/
-	EvaluationLoop(model, world, belief, belief_type, solver, logger,
-			options, main_clock_start, num_runs, start_run);
+        int start_run = 0;
 
-	//logger->End();
+        /* =========================
+         * Display parameters
+         * =========================*/
+        DisplayParameters(options, model);
 
-	PrintResult(num_runs, logger, main_clock_start);
+        /* =========================
+         * run evaluation
+         * =========================*/
 
-	return 0;
-}
+        string file_name = solver_type+"_"+typeid(*model).name()+"_fixed_high_exploration_constant_test.txt";
+        myfile.open (file_name);
+        myfile << "round__discounted_reward/round_undiscounted_reward\n";
+
+
+        EvaluationLoop(model, world, belief, belief_type, solver, logger,
+                       options, main_clock_start, num_runs, start_run);
+
+        //logger->End();
+
+        myfile.close();
+        rollout_file.close(); //TB file
+
+        PrintResult(num_runs, logger, main_clock_start);
+
+        return 0;
+    }
 
 } /* namespace despot */
