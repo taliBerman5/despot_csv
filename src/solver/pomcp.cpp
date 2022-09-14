@@ -114,9 +114,11 @@ namespace despot {
         OBS_TYPE obs;
         bool terminal = model->Step(*particle, action, reward, obs);
         if (!terminal) {
+//            prior->Add(action, obs);
             reward += Globals::Discount()
                       * Rollout_for_statistics(particle, vnode->depth() + 1, model, prior);
             *(this->file_) << to_string(reward) + "\n";
+//            prior->PopLast();
         }
 
     }
