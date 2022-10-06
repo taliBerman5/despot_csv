@@ -72,7 +72,7 @@ namespace despot {
         prior_ = prior;
         assert(prior_ != NULL);
         file_ = myfile;
-        string title = "rollout_value\n";
+        string title = "action,rollout_value\n";
         *myfile << title;
 
     }
@@ -83,45 +83,6 @@ namespace despot {
 
 
 
-    double POMCP::Rollout_for_statistics(State* particle, int depth, const DSPOMDP* model,
-                                         POMCPPrior* prior) {
-        if (depth >= Globals::config.search_depth) {
-            return 0;
-        }
-
-        ACT_TYPE action = prior->GetAction(*particle);
-
-        double reward;
-        OBS_TYPE obs;
-        bool terminal = model->Step(*particle, action, reward, obs);
-        if (!terminal) {
-            reward += Globals::Discount() * Rollout_for_statistics(particle, depth + 1, model, prior);
-        }
-
-        return reward;
-    }
-
-    void POMCP::rollout_to_csv(State* particle, VNode* vnode, const DSPOMDP* model,
-                               POMCPPrior* prior){
-        assert(vnode != NULL);
-
-
-//	double explore_constant = (model->GetMaxReward() - OptimalAction(vnode).value);//prior->exploration_constant();
-        double explore_constant = prior->exploration_constant();
-        ACT_TYPE action = UpperBoundAction(vnode, explore_constant);
-
-        double reward;
-        OBS_TYPE obs;
-        bool terminal = model->Step(*particle, action, reward, obs);
-        if (!terminal) {
-//            prior->Add(action, obs);
-            reward += Globals::Discount()
-                      * Rollout_for_statistics(particle, vnode->depth() + 1, model, prior);
-            *(this->file_) << to_string(reward) + "\n";
-//            prior->PopLast();
-        }
-
-    }
 
     ValuedAction POMCP::Search(double timeout) {
         double start_cpu = clock(), start_real = get_time_second();
@@ -141,8 +102,6 @@ namespace despot {
             for (int i = 0; i < particles.size(); i++) {
                 State* particle = particles[i];
                 logd << "[POMCP::Search] Starting simulation " << num_sims << endl;
-
-                rollout_to_csv(particle, root_, model_, prior_);
 
                 Simulate(particle, root_, model_, prior_);
 
@@ -329,7 +288,6 @@ namespace despot {
         if (streams.Exhausted())
             return 0;
 
-//	double explore_constant = (model->GetMaxReward() - OptimalAction(vnode).value);//prior->exploration_constant();
         double explore_constant = prior->exploration_constant();
 
         ACT_TYPE action = POMCP::UpperBoundAction(vnode, explore_constant);
@@ -374,10 +332,7 @@ namespace despot {
         if (vnode->depth() >= Globals::config.search_depth)
             return 0;
 
-//	double explore_constant = (model->GetMaxReward() - OptimalAction(vnode).value);//prior->exploration_constant();
         double explore_constant = prior->exploration_constant();
-//    double explore_constant = 1000;
-//    cout << explore_constant << endl;
         ACT_TYPE action = UpperBoundAction(vnode, explore_constant);
 
         double reward;
@@ -439,7 +394,7 @@ namespace despot {
     double POMCP::Rollout(State* particle, int depth, const DSPOMDP* model,
                           POMCPPrior* prior) {
         if (depth >= Globals::config.search_depth) {
-            return 0;
+            return model->GetHeuristicValue(*particle);
         }
 
         ACT_TYPE action = prior->GetAction(*particle);

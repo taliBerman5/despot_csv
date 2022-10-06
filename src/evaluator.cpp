@@ -53,7 +53,6 @@ namespace despot {
 
             myfile << logger->total_discounted_reward_round() << "/"<<round_reward <<"\n";
             round_rewards[round] = round_reward;
-            Globals::config.search_depth = 90; //TB TODO: delete
         }
     }
 
@@ -98,7 +97,7 @@ namespace despot {
          * =========================*/
         //TB file
         ofstream rollout_file;
-        string rollout_file_name = solver_type+"_"+typeid(*model).name()+"_rollouts_uniform.csv";
+        string rollout_file_name = solver_type+"_"+typeid(*model).name()+"_rollouts_uniform_action_test.csv";
         rollout_file.open (rollout_file_name);
         //TB file
 

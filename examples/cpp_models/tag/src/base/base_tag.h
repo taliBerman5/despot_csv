@@ -154,6 +154,8 @@ public:
 	Belief* Tau(const Belief* belief, ACT_TYPE action, OBS_TYPE obs) const;
 	void Observe(const Belief* belief, ACT_TYPE action, std::map<OBS_TYPE, double>& obss) const = 0;
 	double StepReward(const Belief* belief, ACT_TYPE action) const;
+
+    double GetHeuristicValue(const State &s) const;
 };
 
 /* ==============================================================================

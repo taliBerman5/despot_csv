@@ -115,9 +115,6 @@ namespace despot {
         static ACT_TYPE UpperBoundAction(const VNode* vnode, double explore_constant);
         static ValuedAction OptimalAction(const VNode* vnode);
         static int Count(const VNode* vnode);
-        void rollout_to_csv(State* particle, VNode* vnode, const DSPOMDP* model, POMCPPrior* prior); //TB
-        double Rollout_for_statistics(State* particle, int depth, const DSPOMDP* model,
-                                      POMCPPrior* prior); //TB
     };
 
 /* =============================================================================

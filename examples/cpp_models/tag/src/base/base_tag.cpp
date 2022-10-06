@@ -776,7 +776,7 @@ void BaseTag::PrintState(const State& s, ostream& out) const {
 
 	int aindex = rob_[state.state_id];
 	int oindex = opp_[state.state_id];
-
+    double dis = floor_.Distance(aindex, oindex);
 	for (int y = floor_.num_rows()-1; y >= 0; y--) {
 		for (int x = 0; x < floor_.num_cols(); x++) {
 			int index = floor_.GetIndex(x, y);
@@ -793,6 +793,32 @@ void BaseTag::PrintState(const State& s, ostream& out) const {
 		}
 		out << endl;
 	}
+}
+
+double BaseTag::GetHeuristicValue(const State &s) const {
+    const TagState &state = static_cast<const TagState &>(s);
+    int aindex = rob_[state.state_id];
+    int oindex = opp_[state.state_id];
+
+    //floor_.Distance(aindex, oindex);
+    floor_.GetCell(aindex);
+    for (int y = floor_.num_rows() - 1; y >= 0; y--) {
+        for (int x = 0; x < floor_.num_cols(); x++) {
+            int index = floor_.GetIndex(x, y);
+
+            if (index == Floor::INVALID)
+                cout << "#"<<endl;
+            else if (index == aindex && index == oindex)
+                cout << "Q"<<endl;
+            else if (index == aindex)
+                cout << "R"<<endl;
+            else if (index == oindex)
+                cout << "O"<<endl;
+            else
+                cout << "." <<endl;
+        }
+    }
+    return 0;
 }
 
 void BaseTag::PrintBelief(const Belief& belief, ostream& out) const {

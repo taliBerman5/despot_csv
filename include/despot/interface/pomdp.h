@@ -329,6 +329,14 @@ public:
 	inline virtual DSPOMDP* MakeCopy() const {
 		return NULL;
 	}
+
+    /**
+     * [Essential]
+     * Returns the heuristic value for the state. //TB
+     */
+    virtual double GetHeuristicValue(const State& state) const {
+        return 0;
+    };
 };
 
 /* =============================================================================
