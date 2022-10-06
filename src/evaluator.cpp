@@ -63,7 +63,7 @@ namespace despot {
          * =========================*/
         string solver_type = ChooseSolver();
         bool search_solver;
-        int num_runs = 1;
+        int num_runs = 20;
         string world_type = "pomdp";
         string belief_type = "DEFAULT";
         int time_limit = -1;
@@ -122,7 +122,7 @@ namespace despot {
          * run evaluation
          * =========================*/
 
-        string file_name = solver_type+"_"+typeid(*model).name()+"_fixed_high_exploration_constant_test.txt";
+        string file_name = solver_type+"_"+typeid(*model).name()+"_90simLength_Manhattan_heuristic.txt";
         myfile.open (file_name);
         myfile << "round__discounted_reward/round_undiscounted_reward\n";
 

@@ -96,7 +96,6 @@ namespace despot {
         int hist_size = history_.Size();
         bool done = false;
         int num_sims = 0;
-        int count = 1;
         while (true) {
             vector<State*> particles = belief_->Sample(1000);
             for (int i = 0; i < particles.size(); i++) {
@@ -113,16 +112,12 @@ namespace despot {
                     done = true;
                     break;
                 }
-                count ++;
-                if(count == 10000)
-                    break;
+
             }
 
             for (int i = 0; i < particles.size(); i++) {
                 model_->Free(particles[i]);
             }
-            if(count == 10000)
-                break;
             if (done)
                 break;
         }
@@ -330,7 +325,7 @@ namespace despot {
         assert(vnode != NULL);
 
         if (vnode->depth() >= Globals::config.search_depth)
-            return 0;
+            return model->GetHeuristicValue(*particle);
 
         double explore_constant = prior->exploration_constant();
         ACT_TYPE action = UpperBoundAction(vnode, explore_constant);
