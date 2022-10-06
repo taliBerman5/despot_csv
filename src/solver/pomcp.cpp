@@ -135,14 +135,13 @@ namespace despot {
         int hist_size = history_.Size();
         bool done = false;
         int num_sims = 0;
-        int count = 1;
         while (true) {
             vector<State*> particles = belief_->Sample(1000);
             for (int i = 0; i < particles.size(); i++) {
                 State* particle = particles[i];
                 logd << "[POMCP::Search] Starting simulation " << num_sims << endl;
 
-                rollout_to_csv(particle, root_, model_, prior_);
+//                rollout_to_csv(particle, root_, model_, prior_);
 
                 Simulate(particle, root_, model_, prior_);
 
@@ -154,16 +153,11 @@ namespace despot {
                     done = true;
                     break;
                 }
-                count ++;
-                if(count == 10000)
-                    break;
             }
 
             for (int i = 0; i < particles.size(); i++) {
                 model_->Free(particles[i]);
             }
-            if(count == 10000)
-                break;
             if (done)
                 break;
         }
