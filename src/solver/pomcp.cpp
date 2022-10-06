@@ -371,7 +371,6 @@ namespace despot {
 //	double explore_constant = (model->GetMaxReward() - OptimalAction(vnode).value);//prior->exploration_constant();
         double explore_constant = prior->exploration_constant();
 //    double explore_constant = 1000;
-//    cout << explore_constant << endl;
         ACT_TYPE action = UpperBoundAction(vnode, explore_constant);
 
         double reward;
