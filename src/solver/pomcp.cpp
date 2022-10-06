@@ -326,7 +326,7 @@ namespace despot {
 
         if (vnode->depth() >= Globals::config.search_depth)
             return model->GetHeuristicValue(*particle);
-
+//        double explore_constant = (model->GetMaxReward() - OptimalAction(vnode).value); //TB
         double explore_constant = prior->exploration_constant();
         ACT_TYPE action = UpperBoundAction(vnode, explore_constant);
 
