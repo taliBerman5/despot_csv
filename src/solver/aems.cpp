@@ -14,7 +14,7 @@ AEMS::AEMS(const DSPOMDP* model, BeliefLowerBound* lower_bound,
 	reuse_ = false;
 }
 
-ValuedAction AEMS::Search() {
+ValuedAction AEMS::Search(int tb) {
 	if (root_ == NULL) {
 		root_ = new VNode(belief_->MakeCopy());
 		InitLowerBound(root_, lower_bound_, history_);

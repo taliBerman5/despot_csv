@@ -53,7 +53,7 @@ public:
 	 * found value for the action. Return the value Globals::NEG_INFTY if the
 	 * value is not to be used.
 	 */
-	virtual ValuedAction Search() = 0;
+	virtual ValuedAction Search(int step) = 0;
 
 	/**
 	 * Update current belief, history, and any other internal states that is

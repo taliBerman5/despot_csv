@@ -72,7 +72,7 @@ namespace despot {
         prior_ = prior;
         assert(prior_ != NULL);
         file_ = myfile;
-        string title = "action,rollout_value\n";
+        string title = "round,rollout,rollout_success,rollout_unsuccess\n";
         *myfile << title;
 
     }
@@ -84,7 +84,11 @@ namespace despot {
 
 
 
-    ValuedAction POMCP::Search(double timeout) {
+    ValuedAction POMCP::Search(double timeout, int step) {
+        int rollout = 0;
+        int success_rollout = 0;
+        int unsuccess_rollout = 0;
+
         double start_cpu = clock(), start_real = get_time_second();
 
         if (root_ == NULL) {
@@ -102,7 +106,7 @@ namespace despot {
                 State* particle = particles[i];
                 logd << "[POMCP::Search] Starting simulation " << num_sims << endl;
 
-                Simulate(particle, root_, model_, prior_);
+                Simulate(particle, root_, model_, prior_, file_, &rollout, &success_rollout, &unsuccess_rollout);
 
                 num_sims++;
                 logd << "[POMCP::Search] " << num_sims << " simulations done" << endl;
@@ -121,6 +125,7 @@ namespace despot {
             if (done)
                 break;
         }
+        *file_ << to_string(step) + "," + to_string(rollout) + "," + to_string(success_rollout) + "," + to_string(unsuccess_rollout) + "\n";
 
         ValuedAction astar = OptimalAction(root_);
 
@@ -142,8 +147,8 @@ namespace despot {
         return astar;
     }
 
-    ValuedAction POMCP::Search() {
-        return Search(Globals::config.time_per_move);
+    ValuedAction POMCP::Search(int step) {
+        return Search(Globals::config.time_per_move, step);
     }
 
     void POMCP::belief(Belief* b) {
@@ -321,11 +326,11 @@ namespace despot {
 
 // static
     double POMCP::Simulate(State* particle, VNode* vnode, const DSPOMDP* model,
-                           POMCPPrior* prior) {
+                           POMCPPrior* prior, std::ofstream* file, int* rollout, int* success_rollout, int* unsuccess_rollout) {
         assert(vnode != NULL);
 
         if (vnode->depth() >= Globals::config.search_depth)
-            return /*0;*/ model->GetHeuristicValue(*particle);
+            return 0;
 //        double explore_constant = (model->GetMaxReward() - OptimalAction(vnode).value); //TB
         double explore_constant = prior->exploration_constant();
         ACT_TYPE action = UpperBoundAction(vnode, explore_constant);
@@ -340,12 +345,13 @@ namespace despot {
             map<OBS_TYPE, VNode*>& vnodes = qnode->children();
             if (vnodes[obs] != NULL) {
                 reward += Globals::Discount()
-                          * Simulate(particle, vnodes[obs], model, prior);
+                          * Simulate(particle, vnodes[obs], model, prior, file, rollout, success_rollout, unsuccess_rollout);
             } else { // Rollout upon encountering a node not in curren tree, then add the node
                 vnodes[obs] = CreateVNode(vnode->depth() + 1, particle, prior,
                                           model);
+                *rollout += 1;
                 reward += Globals::Discount()
-                          * Rollout(particle, vnode->depth() + 1, model, prior);
+                          * Rollout(particle, vnode->depth() + 1, model, prior, file, success_rollout, unsuccess_rollout);
             }
             prior->PopLast();
         }
@@ -387,9 +393,10 @@ namespace despot {
 
 // static
     double POMCP::Rollout(State* particle, int depth, const DSPOMDP* model,
-                          POMCPPrior* prior) {
+                          POMCPPrior* prior, std::ofstream* file, int* success_rollout, int* unsuccess_rollout) {
         if (depth >= Globals::config.search_depth) {
-            return /*0;*/ model->GetHeuristicValue(*particle);
+            *unsuccess_rollout += 1;
+            return 0;
         }
 
         ACT_TYPE action = prior->GetAction(*particle);
@@ -399,10 +406,11 @@ namespace despot {
         bool terminal = model->Step(*particle, action, reward, obs);
         if (!terminal) {
             prior->Add(action, obs);
-            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior);
+            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior, file, success_rollout, unsuccess_rollout);
             prior->PopLast();
         }
-
+        else
+            *success_rollout += 1;
         return reward;
     }
 

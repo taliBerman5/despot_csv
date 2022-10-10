@@ -97,7 +97,7 @@ namespace despot {
          * =========================*/
         //TB file
         ofstream rollout_file;
-        string rollout_file_name = solver_type+"_"+typeid(*model).name()+"_rollouts_uniform_action_test.csv";
+        string rollout_file_name = solver_type+"_"+typeid(*model).name()+"_success_rollout_to_goal_test.csv";
         rollout_file.open (rollout_file_name);
         //TB file
 

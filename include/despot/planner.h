@@ -26,7 +26,7 @@ public:
 	/**
 	 * Perform one search-execute-update step
 	 */
-	virtual bool RunStep(Solver* solver, World* world, Logger* logger);
+	virtual bool RunStep(Solver* solver, World* world, Logger* logger, int step);
 
 	/**
 	 * Run POMDP planning till terminal reached or time out

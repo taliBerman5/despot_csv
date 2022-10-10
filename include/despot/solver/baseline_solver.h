@@ -27,7 +27,7 @@ public:
 	ScenarioBaselineSolver(ScenarioLowerBound* lowerbound, Belief* belief = NULL);
 	virtual ~ScenarioBaselineSolver();
 
-	virtual ValuedAction Search();
+	virtual ValuedAction Search(int tb);
 };
 
 /* =============================================================================
@@ -44,7 +44,7 @@ public:
 	BeliefBaselineSolver(BeliefLowerBound* lowerbound, Belief* belief = NULL);
 	virtual ~BeliefBaselineSolver();
 
-	virtual ValuedAction Search();
+	virtual ValuedAction Search(int tb);
 };
 
 } /* namespace despot */
