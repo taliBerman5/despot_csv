@@ -774,6 +774,13 @@ void Pocman::PrintState(const State& state, ostream& ostr) const {
 	ostr << endl;
 }
 
+double Pocman::GetHeuristicValue(const State &s) const {
+    const PocmanState &state = static_cast<const PocmanState &>(s);
+    int discount = pow(Globals::Discount(),state.num_food);
+    int heuristic_value = reward_default_ * (discount -1) + reward_clear_level_ * discount;
+    return 0;
+}
+
 void Pocman::PrintObs(const State& state, OBS_TYPE observation,
 	ostream& ostr) const {
 	const PocmanState& pocstate = static_cast<const PocmanState&>(state);
@@ -883,5 +890,7 @@ void Pocman::Free(State* particle) const {
 int Pocman::NumActiveParticles() const {
 	return memory_pool_.num_allocated();
 }
+
+
 
 } // namespace despot

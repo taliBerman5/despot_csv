@@ -61,7 +61,8 @@ public:
 	inline double GetMaxReward() const {
 		return reward_clear_level_;
 	}
-	ScenarioUpperBound* CreateScenarioUpperBound(std::string name = "DEFAULT",
+    double GetHeuristicValue(const State &s) const;
+    ScenarioUpperBound* CreateScenarioUpperBound(std::string name = "DEFAULT",
 		std::string particle_bound_name = "DEFAULT") const;
 
 	inline ValuedAction GetBestAction() const {

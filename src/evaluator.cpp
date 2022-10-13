@@ -122,7 +122,7 @@ namespace despot {
          * run evaluation
          * =========================*/
 
-        string file_name = solver_type+"_"+typeid(*model).name()+"_test.txt";
+        string file_name = solver_type+"_"+typeid(*model).name()+"_10sim_length_NewMAP2_Manhattan_heuristic_test.txt";
         myfile.open (file_name);
         myfile << "round__discounted_reward/round_undiscounted_reward\n";
 
