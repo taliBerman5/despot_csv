@@ -774,11 +774,30 @@ void Pocman::PrintState(const State& state, ostream& ostr) const {
 	ostr << endl;
 }
 
+/*the heuristic is based on the amount of food remains in order to complete the game
+ * when the ghosts are close there is a penalty to the heuristic value*/
 double Pocman::GetHeuristicValue(const State &s) const {
     const PocmanState &state = static_cast<const PocmanState &>(s);
-    int discount = pow(Globals::Discount(),state.num_food);
-    int heuristic_value = reward_default_ * (discount -1) + reward_clear_level_ * discount;
-    return 0;
+    int near_ghosts = 0;
+    int ghost_reward = reward_die_;
+    for (int g = 0; g < num_ghosts_; g++){
+        if (state.power_steps > 0)
+            ghost_reward = reward_eat_ghost_;
+        if(state.pocman_pos.x == state.ghost_pos[g].x && state.pocman_pos.y == state.ghost_pos[g].y - 1)
+            near_ghosts += 1;
+        if(state.pocman_pos.x == state.ghost_pos[g].x && state.pocman_pos.y == state.ghost_pos[g].y + 1)
+            near_ghosts += 1;
+        if(state.pocman_pos.x == state.ghost_pos[g].x - 1 && state.pocman_pos.y == state.ghost_pos[g].y)
+            near_ghosts += 1;
+        if(state.pocman_pos.x == state.ghost_pos[g].x + 1 && state.pocman_pos.y == state.ghost_pos[g].y)
+            near_ghosts += 1;
+    }
+    double discount = pow(Globals::Discount(),state.num_food);
+//    double heuristic_value = reward_default_ * discount + reward_clear_level_ * discount + near_ghosts * ghost_reward;
+        double heuristic_value = reward_default_ * discount + near_ghosts * ghost_reward;
+//        double heuristic_value = near_ghosts * ghost_reward;
+
+    return heuristic_value;
 }
 
 void Pocman::PrintObs(const State& state, OBS_TYPE observation,

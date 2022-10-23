@@ -344,10 +344,8 @@ namespace despot {
             } else { // Rollout upon encountering a node not in curren tree, then add the node
                 vnodes[obs] = CreateVNode(vnode->depth() + 1, particle, prior,
                                           model);
-//                reward += Globals::Discount()
-//                          * Rollout(particle, vnode->depth() + 1, model, prior);
-                int a = Rollout(particle, vnode->depth() + 1, model, prior);
-                reward += a;
+                reward += Globals::Discount()
+                          * Rollout(particle, vnode->depth() + 1, model, prior);
             }
             prior->PopLast();
         }

@@ -122,7 +122,10 @@ namespace despot {
          * run evaluation
          * =========================*/
 
-        string file_name = solver_type+"_"+typeid(*model).name()+"_10sim_length_NewMAP2_Manhattan_heuristic_test.txt";
+//        string file_name = solver_type+"_"+typeid(*model).name()+"_20sim_heuristic_rollout_ghostsNear.txt";
+        string file_name = solver_type+"_"+typeid(*model).name()+"_90sim_heuristic_rollout_ghostsNear_foodPallet_test.txt";
+//        string file_name = solver_type+"_"+typeid(*model).name()+"_20sim_newMap_Manhattan_heuristic.txt";
+//        string file_name = solver_type+"_"+typeid(*model).name()+"_10sim_newMap.txt";
         myfile.open (file_name);
         myfile << "round__discounted_reward/round_undiscounted_reward\n";
 
