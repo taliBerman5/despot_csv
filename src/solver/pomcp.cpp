@@ -392,10 +392,33 @@ namespace despot {
     }
 
 // static
-    double POMCP::Rollout(State* particle, int depth, const DSPOMDP* model,
-                          POMCPPrior* prior, std::ofstream* file, int* success_rollout, int* unsuccess_rollout) {
-        if (depth >= Globals::config.search_depth) {
+double POMCP::Rollout(State* particle, int depth, const DSPOMDP* model,
+                      POMCPPrior* prior, std::ofstream* file, int* success_rollout, int* unsuccess_rollout) {
+    if (depth >= Globals::config.search_depth) {
             *unsuccess_rollout += 1;
+        return 0;
+    }
+
+    ACT_TYPE action = prior->GetAction(*particle);
+
+    double reward;
+    OBS_TYPE obs;
+    bool terminal = model->Step(*particle, action, reward, obs);
+    if (!terminal) {
+        prior->Add(action, obs);
+        reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior, file, success_rollout, unsuccess_rollout);
+        prior->PopLast();
+    }
+        else
+            *success_rollout += 1;
+    return reward;
+}
+
+// static  for TIGER TB
+    double POMCP::Rollout(State* particle, int depth, const DSPOMDP* model,
+                          POMCPPrior* prior, std::ofstream* file, int* rollout, int* success_rollout, int* unsuccess_rollout) {
+        if (depth >= Globals::config.search_depth) {
+//            *unsuccess_rollout += 1;
             return 0;
         }
 
@@ -406,11 +429,18 @@ namespace despot {
         bool terminal = model->Step(*particle, action, reward, obs);
         if (!terminal) {
             prior->Add(action, obs);
-            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior, file, success_rollout, unsuccess_rollout);
+            double roll = Rollout(particle, depth + 1, model, prior, file, rollout, success_rollout, unsuccess_rollout);
+            *rollout += 1;
+            reward += Globals::Discount() * roll;
+//            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior, file, success_rollout, unsuccess_rollout);
+            if(roll == -100) //TB TIGER
+                *unsuccess_rollout += 1;
+            else if(roll == 10)
+                *success_rollout += 1; //TB TIGER
             prior->PopLast();
         }
-        else
-            *success_rollout += 1;
+//        else
+//            *success_rollout += 1;
         return reward;
     }
 

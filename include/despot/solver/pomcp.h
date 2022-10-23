@@ -108,6 +108,8 @@ namespace despot {
                                VNode* vnode, const DSPOMDP* model, POMCPPrior* prior);
         static double Rollout(State* particle, int depth, const DSPOMDP* model,
                               POMCPPrior* prior, std::ofstream* file, int* success_rollout, int* unsuccess_rollout);
+        static double Rollout(State* particle, int depth, const DSPOMDP* model,
+                              POMCPPrior* prior, std::ofstream* file, int* rollout, int* success_rollout, int* unsuccess_rollout);
         static double Rollout(State* particle, RandomStreams& streams, int depth,
                               const DSPOMDP* model, POMCPPrior* prior);
         static ValuedAction Evaluate(VNode* root, std::vector<State*>& particles,
