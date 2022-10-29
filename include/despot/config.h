@@ -25,7 +25,7 @@ struct Config {
 		num_scenarios(500),
 		search_depth(90), //TODO: TB - changed from 90
 		max_policy_sim_len(90),
-		discount(0.95),
+		discount(0.95), //TODO: TB - changed from 0.95
 		pruning_constant(0),
 		xi(0.95),
 		root_seed(42),

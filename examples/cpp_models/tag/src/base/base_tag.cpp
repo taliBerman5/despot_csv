@@ -286,7 +286,7 @@ public:
 		legal_actions_.clear();
 		preferred_actions_.clear();
 
-		for (int a = 0; a < 5; a++) {
+		for (int a = 0; a < 5; a++) { //TODO: TB changed to be till 4 not 5
 			legal_actions_.push_back(a);
 		}
 
@@ -294,7 +294,7 @@ public:
 			if (history_.LastObservation() == tag_model_->same_loc_obs_) {
 				preferred_actions_.push_back(tag_model_->TagAction());
 			} else {
-				if (tag_model_->robot_pos_unknown_) {
+				if (tag_model_->robot_pos_unknown_) { //TODO: TB added !
 					for (int a = 0; a < 4; a++) {
 						if (tag_model_->floor_.Inside(
 							rob + Compass::DIRECTIONS[a])) {
@@ -803,7 +803,7 @@ double BaseTag::GetHeuristicValue(const State &s) const {
     Coord rob = floor_.GetCell(aindex);
     Coord opp = floor_.GetCell(oindex);
     int dist = Coord::ManhattanDistance(rob, opp);
-    return - dist;
+    return TAG_REWARD - dist;
 }
 
 void BaseTag::PrintBelief(const Belief& belief, ostream& out) const {

@@ -13,12 +13,12 @@ namespace despot {
  * =============================================================================*/
 
 Tag::Tag() {
-//	string map = string("mapSize = 5 10\n") + string("#####...##\n")
-//		+ string("#####...##\n") + string("#####...##\n")
-//		+ string("...........\n") + string("...........");
-        string map = string("mapSize = 5 10\n") + string("####....##\n")
-                     + string("####..#.##\n") + string("####....##\n")
-                     + string("...........\n") + string("..........."); //TD different map - newMap TODO
+	string map = string("mapSize = 5 10\n") + string("#####...##\n")
+		+ string("#####...##\n") + string("#####...##\n")
+		+ string("...........\n") + string("...........");
+//        string map = string("mapSize = 5 10\n") + string("####....##\n")
+//                     + string("####..#.##\n") + string("####....##\n")
+//                     + string("...........\n") + string("..........."); //TD different map - newMap TODO
 //        	string map = string("mapSize = 5 10\n") + string("#####...##\n")
 //		+ string("#####.#.##\n") + string("#####...##\n")
 //		+ string("...........\n") + string("..........."); //TD different map - newMap2 TODO
