@@ -30,7 +30,8 @@ Tag::Tag() {
 	for (int rob = 0; rob < floor_.NumCells(); rob++) {
 		for (int opp = 0; opp < floor_.NumCells(); opp++) {
 			int s = RobOppIndicesToStateIndex(rob, opp);
-			obs_[s] = (rob == opp ? same_loc_obs_ : rob);
+			obs_[s] = rob;
+//			obs_[s] = (rob == opp ? same_loc_obs_ : rob);  //TODO: TB original
 		}
 	}
   robot_pos_unknown_ = false;
@@ -43,17 +44,30 @@ Tag::Tag(string params_file) :
 	for (int rob = 0; rob < floor_.NumCells(); rob++) {
 		for (int opp = 0; opp < floor_.NumCells(); opp++) {
 			int s = RobOppIndicesToStateIndex(rob, opp);
-			obs_[s] = (rob == opp ? same_loc_obs_ : rob);
+            obs_[s] = rob;
+//			obs_[s] = (rob == opp ? same_loc_obs_ : rob); //TODO: TB original
 		}
 	}
   robot_pos_unknown_ = false;
 }
 
+OBS_TYPE Tag::getObs(const State& s, ACT_TYPE action) const{
+    if(action == 4){
+        const TagState& state = static_cast<const TagState&>(s);
+        int rob = rob_[state.state_id];
+        int opp = opp_[state.state_id];
+        return (rob == opp ? same_loc_obs_ : rob);
+    }
+    return obs_[s.state_id];
+
+}
+
 bool Tag::Step(State& state, double random_num, ACT_TYPE action, double& reward,
 	OBS_TYPE& obs) const {
 	bool terminal = BaseTag::Step(state, random_num, action, reward);
-
-	obs = obs_[state.state_id];
+    int i = 0;
+	obs = getObs(state, action);
+//    obs = obs_[state.state_id];
 
 	return terminal;
 }
@@ -61,7 +75,7 @@ bool Tag::Step(State& state, double random_num, ACT_TYPE action, double& reward,
 double Tag::ObsProb(OBS_TYPE obs, const State& s, ACT_TYPE a) const {
 	const TagState& state = static_cast<const TagState&>(s);
 
-	return obs == obs_[state.state_id];
+	return obs == getObs(s, a);
 }
 
 Belief* Tag::ExactPrior() const {

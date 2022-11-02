@@ -20,6 +20,7 @@ public:
 	Tag();
 	Tag(std::string params_file);
 
+    OBS_TYPE getObs(const State& s, ACT_TYPE action) const; //TB
 	bool Step(State& state, double random_num, ACT_TYPE action, double& reward,
 		OBS_TYPE& obs) const;
 

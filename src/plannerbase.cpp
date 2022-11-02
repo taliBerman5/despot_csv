@@ -222,7 +222,7 @@ namespace despot {
                 solver = new BeliefBaselineSolver(lower_bound);
         } // POMCP or DPOMCP
         else if (solver_type == "POMCP" || solver_type == "DPOMCP") {
-            string ptype = options[E_PRIOR] ? options[E_PRIOR].arg : "DEFAULT";// "UNIFORM"; //TB - Uniform Rollout TODO:default
+            string ptype = options[E_PRIOR] ? options[E_PRIOR].arg : "DEFAULT";//*/ "UNIFORM"; //TB - Uniform Rollout TODO:default
             POMCPPrior *prior = model->CreatePOMCPPrior(ptype);
 
             logi << "Created POMCP prior " << typeid(*prior).name() << endl;

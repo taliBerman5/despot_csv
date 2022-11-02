@@ -294,7 +294,7 @@ public:
 			if (history_.LastObservation() == tag_model_->same_loc_obs_) {
 				preferred_actions_.push_back(tag_model_->TagAction());
 			} else {
-				if (tag_model_->robot_pos_unknown_) { //TODO: TB added !
+				if (!tag_model_->robot_pos_unknown_) { //TODO: TB added !
 					for (int a = 0; a < 4; a++) {
 						if (tag_model_->floor_.Inside(
 							rob + Compass::DIRECTIONS[a])) {
