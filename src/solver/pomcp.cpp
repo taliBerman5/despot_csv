@@ -325,7 +325,7 @@ namespace despot {
         assert(vnode != NULL);
 
         if (vnode->depth() >= Globals::config.search_depth)
-            return /*0;//*/ model->GetHeuristicValue(*particle);
+            return 0;//*/ model->GetHeuristicValue(*particle);
 //        double explore_constant = (model->GetMaxReward() - OptimalAction(vnode).value); //TB
         double explore_constant = prior->exploration_constant();
         ACT_TYPE action = UpperBoundAction(vnode, explore_constant);
@@ -389,7 +389,7 @@ namespace despot {
     double POMCP::Rollout(State* particle, int depth, const DSPOMDP* model,
                           POMCPPrior* prior) {
         if (depth >= Globals::config.search_depth) {
-            return /*0;//*/ model->GetHeuristicValue(*particle);
+            return 0;//*/ model->GetHeuristicValue(*particle);
         }
 
         ACT_TYPE action = prior->GetAction(*particle);

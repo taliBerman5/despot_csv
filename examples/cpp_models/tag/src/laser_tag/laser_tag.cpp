@@ -88,9 +88,9 @@ bool LaserTag::Step(State& state, double random_num, ACT_TYPE action, double& re
 	if (terminal) {
 		obs = same_loc_obs_;
 	} else {
-		if (rob_[state.state_id] == opp_[state.state_id])
-			obs = same_loc_obs_;
-		else {
+//		if (rob_[state.state_id] == opp_[state.state_id])  //TODO: TB no opp obs
+//			obs = same_loc_obs_;
+//		else {
 			const vector<vector<double> >& distribution = reading_distributions_[state.state_id];
 
 			obs = 0;
@@ -104,15 +104,15 @@ bool LaserTag::Step(State& state, double random_num, ACT_TYPE action, double& re
 				}
 				SetReading(obs, reading, dir);
 			}
-		}
+//		}
 	}
 
 	return terminal;
 }
 
 double LaserTag::ObsProb(OBS_TYPE obs, const State& state, ACT_TYPE action) const {
-	if (rob_[state.state_id] == opp_[state.state_id])
-		return obs == same_loc_obs_;
+//	if (rob_[state.state_id] == opp_[state.state_id]) //TODO: TB no opp obs
+//		return obs == same_loc_obs_;
 
 	double prod = 1.0;
 	for (int dir = 0; dir < NBEAMS; dir++) {
