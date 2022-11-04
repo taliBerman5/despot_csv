@@ -94,33 +94,25 @@ namespace despot {
         }
 
         int hist_size = history_.Size();
-        bool done = false;
         int num_sims = 0;
-        while (true) {
-            vector<State*> particles = belief_->Sample(1000);
-            for (int i = 0; i < particles.size(); i++) {
-                State* particle = particles[i];
-                logd << "[POMCP::Search] Starting simulation " << num_sims << endl;
+        vector<State*> particles = belief_->Sample(10000);
+        for (int i = 0; i < particles.size(); i++) {
+            State* particle = particles[i];
+            logd << "[POMCP::Search] Starting simulation " << num_sims << endl;
 
-                Simulate(particle, root_, model_, prior_);
+            Rollout(particle, root_->depth(), model_, prior_);
 
-                num_sims++;
-                logd << "[POMCP::Search] " << num_sims << " simulations done" << endl;
-                history_.Truncate(hist_size);
-
-                if ((clock() - start_cpu) / CLOCKS_PER_SEC >= timeout) {
-                    done = true;
-                    break;
-                }
-
-            }
-
-            for (int i = 0; i < particles.size(); i++) {
-                model_->Free(particles[i]);
-            }
-            if (done)
-                break;
+            num_sims++;
+            logd << "[POMCP::Search] " << num_sims << " simulations done" << endl;
+            history_.Truncate(hist_size);
         }
+
+
+        for (int i = 0; i < particles.size(); i++) {
+            model_->Free(particles[i]);
+        }
+
+
 
         ValuedAction astar = OptimalAction(root_);
 
@@ -325,7 +317,7 @@ namespace despot {
         assert(vnode != NULL);
 
         if (vnode->depth() >= Globals::config.search_depth)
-            return /*0;//*/ model->GetHeuristicValue(*particle);
+            return 0;//*/ model->GetHeuristicValue(*particle);
 //        double explore_constant = (model->GetMaxReward() - OptimalAction(vnode).value); //TB
         double explore_constant = prior->exploration_constant();
         ACT_TYPE action = UpperBoundAction(vnode, explore_constant);
@@ -389,7 +381,7 @@ namespace despot {
     double POMCP::Rollout(State* particle, int depth, const DSPOMDP* model,
                           POMCPPrior* prior) {
         if (depth >= Globals::config.search_depth) {
-            return /*0;//*/ model->GetHeuristicValue(*particle);
+            return 0;//*/ model->GetHeuristicValue(*particle);
         }
 
         ACT_TYPE action = prior->GetAction(*particle);
