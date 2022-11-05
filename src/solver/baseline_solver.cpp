@@ -24,7 +24,7 @@ ScenarioBaselineSolver::ScenarioBaselineSolver(ScenarioLowerBound* lowerbound, B
 ScenarioBaselineSolver::~ScenarioBaselineSolver() {
 }
 
-ValuedAction ScenarioBaselineSolver::Search() {
+ValuedAction ScenarioBaselineSolver::Search(int step) {
 	RandomStreams streams(Globals::config.num_scenarios,
 		Globals::config.search_depth);
 	vector<State*> particles = belief_->Sample(Globals::config.num_scenarios);
@@ -47,7 +47,7 @@ BeliefBaselineSolver::BeliefBaselineSolver(BeliefLowerBound* lowerbound, Belief*
 BeliefBaselineSolver::~BeliefBaselineSolver() {
 }
 
-ValuedAction BeliefBaselineSolver::Search() {
+ValuedAction BeliefBaselineSolver::Search(int step) {
 	return lb_solver_->Value(belief_);
 }
 

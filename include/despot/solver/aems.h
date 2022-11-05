@@ -22,7 +22,7 @@ public:
 	AEMS(const DSPOMDP* model, BeliefLowerBound* lower_bound,
 		BeliefUpperBound* upper_bound, Belief* belief = NULL);
 
-	ValuedAction Search();
+	ValuedAction Search(int step);
 	virtual void BeliefUpdate(ACT_TYPE action, OBS_TYPE obs);
 	virtual void belief(Belief* belief);
 

@@ -24,14 +24,14 @@ namespace despot {
     }
 
 
-    bool Planner::RunStep(Solver* solver, World* world, Logger* logger) {
+    bool Planner::RunStep(Solver* solver, World* world, Logger* logger, int step) {
 
         logger->CheckTargetTime();
 
         double step_start_t = get_time_second();
 
         double start_t = get_time_second();
-        ACT_TYPE action = solver->Search().action;
+        ACT_TYPE action = solver->Search(step).action;
         double end_t = get_time_second();
         double search_time = (end_t - start_t);
         logi << "[RunStep] Time spent in " << typeid(*solver).name()
@@ -56,7 +56,7 @@ namespace despot {
 
     void Planner::PlanningLoop(Solver*& solver, World* world, Logger* logger) {
         for (int i = 0; i < Globals::config.sim_len; i++) {
-            bool terminal = RunStep(solver, world, logger);
+            bool terminal = RunStep(solver, world, logger, i);
             if (terminal)
                 break;
         }

@@ -25,7 +25,7 @@ public:
 	DESPOT(const DSPOMDP* model, ScenarioLowerBound* lb, ScenarioUpperBound* ub, Belief* belief = NULL);
 	virtual ~DESPOT();
 
-	ValuedAction Search();
+	ValuedAction Search(int step);
 
 	void belief(Belief* b);
 	void BeliefUpdate(ACT_TYPE action, OBS_TYPE obs);

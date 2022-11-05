@@ -93,8 +93,8 @@ namespace despot {
     public:
         POMCP(const DSPOMDP* model, POMCPPrior* prior, Belief* belief = NULL);
         POMCP(const DSPOMDP* model, POMCPPrior* prior, std::ofstream* myfile, Belief* belief = NULL); //TB file
-        virtual ValuedAction Search();
-        virtual ValuedAction Search(double timeout);
+        virtual ValuedAction Search(int step);
+        virtual ValuedAction Search(double timeout, int step);
 
         void reuse(bool r);
         virtual void belief(Belief* b);
@@ -107,7 +107,7 @@ namespace despot {
         static double Simulate(State* particle, RandomStreams& streams,
                                VNode* vnode, const DSPOMDP* model, POMCPPrior* prior);
         static double Rollout(State* particle, int depth, const DSPOMDP* model,
-                              POMCPPrior* prior);
+                              POMCPPrior* prior, int* done);
         static double Rollout(State* particle, RandomStreams& streams, int depth,
                               const DSPOMDP* model, POMCPPrior* prior);
         static ValuedAction Evaluate(VNode* root, std::vector<State*>& particles,

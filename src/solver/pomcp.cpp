@@ -72,7 +72,7 @@ namespace despot {
         prior_ = prior;
         assert(prior_ != NULL);
         file_ = myfile;
-        string title = "action,rollout_value\n";
+        string title = "step,done\n";
         *myfile << title;
 
     }
@@ -84,7 +84,7 @@ namespace despot {
 
 
 
-    ValuedAction POMCP::Search(double timeout) {
+    ValuedAction POMCP::Search(double timeout, int step) {
         double start_cpu = clock(), start_real = get_time_second();
 
         if (root_ == NULL) {
@@ -92,15 +92,17 @@ namespace despot {
             root_ = CreateVNode(0, state, prior_, model_);
             model_->Free(state);
         }
-
+        int done;
         int hist_size = history_.Size();
         int num_sims = 0;
         vector<State*> particles = belief_->Sample(10000);
         for (int i = 0; i < particles.size(); i++) {
             State* particle = particles[i];
             logd << "[POMCP::Search] Starting simulation " << num_sims << endl;
+            done = 0;
+            Rollout(particle, root_->depth(), model_, prior_, &done);
 
-            Rollout(particle, root_->depth(), model_, prior_);
+            *file_ << to_string(step) + "," + to_string(done) + "\n";
 
             num_sims++;
             logd << "[POMCP::Search] " << num_sims << " simulations done" << endl;
@@ -134,8 +136,8 @@ namespace despot {
         return astar;
     }
 
-    ValuedAction POMCP::Search() {
-        return Search(Globals::config.time_per_move);
+    ValuedAction POMCP::Search(int step) {
+        return Search(Globals::config.time_per_move, step);
     }
 
     void POMCP::belief(Belief* b) {
@@ -336,7 +338,7 @@ namespace despot {
             } else { // Rollout upon encountering a node not in curren tree, then add the node
                 vnodes[obs] = CreateVNode(vnode->depth() + 1, particle, prior,
                                           model);
-                reward += Globals::Discount() *  Rollout(particle, vnode->depth() + 1, model, prior);
+//                reward += Globals::Discount() *  Rollout(particle, vnode->depth() + 1, model, prior);
 //                reward += Rollout(particle, vnode->depth() + 1, model, prior); //TODO: TB no discount
             }
             prior->PopLast();
@@ -379,7 +381,7 @@ namespace despot {
 
 // static
     double POMCP::Rollout(State* particle, int depth, const DSPOMDP* model,
-                          POMCPPrior* prior) {
+                          POMCPPrior* prior, int* done) {
         if (depth >= Globals::config.search_depth) {
             return 0;//*/ model->GetHeuristicValue(*particle);
         }
@@ -391,10 +393,12 @@ namespace despot {
         bool terminal = model->Step(*particle, action, reward, obs);
         if (!terminal) {
             prior->Add(action, obs);
-            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior); //TODO: TB no discount
+            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior, done); //TODO: TB no discount
 //            reward += Rollout(particle, depth + 1, model, prior);
             prior->PopLast();
         }
+        else
+            *done = 1;
 
         return reward;
     }

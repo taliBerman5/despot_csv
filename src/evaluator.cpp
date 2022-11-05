@@ -124,10 +124,11 @@ namespace despot {
 
 //        string file_name = solver_type+"_"+typeid(*model).name()+"_20sim_heuristic_rollout_ghostsNear.txt";
 //        string file_name = solver_type+"_"+typeid(*model).name()+"_90sim_heuristic_rollout_ghostsNear_foodPallet_test.txt";
-        string file_name = solver_type+"_"+typeid(*model).name()+"_test.txt";
+//        string file_name = solver_type+"_"+typeid(*model).name()+"_test.txt";
 //        string file_name = solver_type+"_"+typeid(*model).name()+"_90sim_Manhattan_heuristic_rewardTag_discount1_default_policy_tag.txt";
 //        string file_name = solver_type+"_"+typeid(*model).name()+"_10sim_Manhattan_heuristic_rewardTag.txt";
 //        string file_name = solver_type+"_"+typeid(*model).name()+"_90sim_discount1_default_policy.txt";
+        string file_name = solver_type+"_"+typeid(*model).name()+"_90sim_check_default_policy2_10000_particles.txt";
         myfile.open (file_name);
         myfile << "round__discounted_reward/round_undiscounted_reward\n";
 
