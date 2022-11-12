@@ -128,6 +128,7 @@ namespace despot {
 //        string file_name = solver_type+"_"+typeid(*model).name()+"_90sim_Manhattan_heuristic_rewardTag_discount1_default_policy_tag.txt";
 //        string file_name = solver_type+"_"+typeid(*model).name()+"_10sim_Manhattan_heuristic_rewardTag.txt";
 //        string file_name = solver_type+"_"+typeid(*model).name()+"_90sim_discount1_default_policy.txt";
+//        string file_name = solver_type+"_"+typeid(*model).name()+"_90sim_no_preferred_CreateVNode.txt";
         myfile.open (file_name);
         myfile << "round__discounted_reward/round_undiscounted_reward\n";
 
