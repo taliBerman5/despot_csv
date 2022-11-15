@@ -65,7 +65,6 @@ OBS_TYPE Tag::getObs(const State& s, ACT_TYPE action) const{
 bool Tag::Step(State& state, double random_num, ACT_TYPE action, double& reward,
 	OBS_TYPE& obs) const {
 	bool terminal = BaseTag::Step(state, random_num, action, reward);
-    int i = 0;
 	obs = getObs(state, action);
 //    obs = obs_[state.state_id];
 
@@ -76,6 +75,7 @@ double Tag::ObsProb(OBS_TYPE obs, const State& s, ACT_TYPE a) const {
 	const TagState& state = static_cast<const TagState&>(s);
 
 	return obs == getObs(s, a);
+//    return obs == obs_[state.state_id];
 }
 
 Belief* Tag::ExactPrior() const {

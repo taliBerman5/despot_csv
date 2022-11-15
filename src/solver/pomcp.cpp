@@ -397,8 +397,8 @@ namespace despot {
         bool terminal = model->Step(*particle, action, reward, obs);
         if (!terminal) {
             prior->Add(action, obs);
-//            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior); //TODO: TB no discount
-            reward += Rollout(particle, depth + 1, model, prior);
+            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior); //TODO: TB no discount
+//            reward += Rollout(particle, depth + 1, model, prior);
             prior->PopLast();
         }
 
