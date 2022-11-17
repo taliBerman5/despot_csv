@@ -50,8 +50,6 @@ namespace despot {
         double update_time = (end_t - start_t);
         logi << "[RunStep] Time spent in Update(): " << update_time << endl;
 
-//    Globals::config.search_depth = Globals::config.search_depth - 1;  //TB - decrease the search depth TODO:delete
-
         return logger->SummarizeStep(step_++, round_, terminal, action, obs,
                                      step_start_t);
     }

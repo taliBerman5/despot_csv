@@ -53,7 +53,6 @@ namespace despot {
 
             myfile << logger->total_discounted_reward_round() << "/"<<round_reward <<"\n";
             round_rewards[round] = round_reward;
-            Globals::config.search_depth = 90; //TB TODO: delete
         }
     }
 
@@ -123,7 +122,7 @@ namespace despot {
          * run evaluation
          * =========================*/
 
-        string file_name = solver_type+"_"+typeid(*model).name()+"_fixed_high_exploration_constant_test.txt";
+        string file_name = solver_type+"_"+typeid(*model).name()+"_test.txt";
         myfile.open (file_name);
         myfile << "round__discounted_reward/round_undiscounted_reward\n";
 
