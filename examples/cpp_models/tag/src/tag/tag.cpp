@@ -3,11 +3,6 @@
 #include "tag.h"
 #include <despot/util/coord.h>
 #include <despot/util/floor.h>
-#include <fstream> //TB
-#include <iostream> //TB
-#include <iterator> //TB
-
-
 
 using namespace std;
 
@@ -17,141 +12,140 @@ namespace despot {
  * Tag class
  * =============================================================================*/
 
-Tag::Tag() {
-	string map = string("mapSize = 5 10\n") + string("#####...##\n")
-		+ string("#####...##\n") + string("#####...##\n")
-		+ string("...........\n") + string("...........");
-	istringstream iss(map);
-	Init(iss);
+    Tag::Tag() {
+        string map = string("mapSize = 5 10\n") + string("#####...##\n")
+                     + string("#####...##\n") + string("#####...##\n")
+                     + string("...........\n") + string("...........");
+        istringstream iss(map);
+        Init(iss);
 
-	same_loc_obs_ = floor_.NumCells();
-	obs_.resize(NumStates());
-	for (int rob = 0; rob < floor_.NumCells(); rob++) {
-		for (int opp = 0; opp < floor_.NumCells(); opp++) {
-			int s = RobOppIndicesToStateIndex(rob, opp);
-			obs_[s] = (rob == opp ? same_loc_obs_ : rob);
-		}
-	}
-  robot_pos_unknown_ = false;
+        same_loc_obs_ = floor_.NumCells();
+        obs_.resize(NumStates());
+        for (int rob = 0; rob < floor_.NumCells(); rob++) {
+            for (int opp = 0; opp < floor_.NumCells(); opp++) {
+                int s = RobOppIndicesToStateIndex(rob, opp);
+                obs_[s] = rob;
+//			obs_[s] = (rob == opp ? same_loc_obs_ : rob);  //TODO: TB original
+            }
+        }
+        robot_pos_unknown_ = false;
         state_value_ = {10,8.5,4.435,8.5,5.721,4.435,2.053,2.053,3.213,-1.093,-1.093,-3.789,-1.093,-0.097,3.213,-0.097,-0.097,0.95,-0.097,-1.093,-2.038,-1.093,-2.038,0.95,4.435,-2.038,-0.097,-0.097,-0.097,-0.097,10,8.5,7.075,7.075,4.435,-2.038,5.721,-0.097,-2.038,-2.038,-2.038,-2.038,-2.038,-2.038,4.435,0.95,-0.097,-0.097,-2.038,-2.038,-2.038,-2.936,-0.097,3.213,-1.093,0.95,0.95,0.95,7.075,7.075,10,2.053,3.213,3.213,-2.936,-2.936,2.053,-2.936,-2.936,-2.936,-2.936,-2.936,-2.936,-1.093,4.435,2.053,-0.097,-2.936,-2.936,-2.936,-2.936,-2.936,-0.097,-2.936,-2.038,3.213,2.053,7.075,5.721,5.721,10,7.075,5.721,5.721,0.95,2.053,0.95,-2.936,0.95,-0.097,-1.093,5.721,3.213,-0.097,0.95,2.053,-0.097,-0.097,-5.37,0.95,-0.097,0.95,3.213,3.213,0.95,0.95,7.075,8.5,7.075,7.075,10,7.075,3.213,7.075,5.721,-1.093,-1.093,-1.093,-1.093,-2.936,2.053,3.213,2.053,2.053,0.95,-2.936,-1.093,-1.093,-1.093,0.95,-0.097,5.721,2.053,2.053,2.053,5.721,7.075,8.5,5.721,8.5,10,0.95,-2.936,8.5,-2.038,-2.038,-2.038,-2.936,-0.097,2.053,2.053,5.721,3.213,3.213,-2.038,-2.936,-2.038,0.95,0.95,-2.038,2.053,0.95,4.435,2.053,4.435,4.435,2.053,5.721,5.721,4.435,10,4.435,7.075,-0.097,0.95,3.213,0.95,3.213,0.95,3.213,2.053,4.435,3.213,0.95,0.95,0.95,2.053,3.213,5.721,2.053,0.95,2.053,2.053,5.721,7.075,5.721,7.075,7.075,7.075,8.5,10,8.5,-0.097,-0.097,-0.097,3.213,-1.093,0.95,4.435,3.213,3.213,3.213,-0.097,-0.097,0.95,-0.097,-1.093,2.053,7.075,2.053,3.213,3.213,4.435,4.435,4.435,4.435,2.053,7.075,2.053,7.075,10,-2.038,-1.093,-2.038,0.95,-0.097,4.435,3.213,7.075,5.721,5.721,-1.093,-1.093,-1.093,-1.093,-2.038,-1.093,2.053,2.053,2.053,4.435,-2.038,-2.038,-2.038,-2.038,-2.038,-2.038,-2.038,-2.038,-2.038,10,8.5,4.435,0.95,-0.097,-1.093,-2.936,-2.038,-1.093,-2.038,8.5,7.075,2.053,-2.038,2.053,-2.936,-2.038,-3.789,-3.789,-2.038,-2.936,-1.093,-1.093,0.95,-0.097,-2.038,-1.093,-1.093,-1.093,8.5,10,8.5,5.721,-0.097,-1.093,-1.093,-1.093,-1.093,-1.093,7.075,7.075,-2.038,3.213,3.213,-1.093,-1.093,-3.789,-1.093,-1.093,0.95,-1.093,-2.936,-6.796,-0.097,-0.097,-0.097,-0.097,-0.097,5.721,8.5,10,3.213,2.053,0.95,-0.097,-1.093,-0.097,-1.093,5.721,7.075,7.075,5.721,3.213,-0.097,-0.097,-0.097,-0.097,-0.097,2.053,0.95,0.95,0.95,0.95,-0.097,3.213,-0.097,-0.097,4.435,5.721,8.5,10,7.075,4.435,0.95,2.053,-0.097,0.95,3.213,3.213,7.075,0.95,5.721,2.053,2.053,2.053,0.95,0.95,4.435,2.053,2.053,2.053,2.053,2.053,2.053,-3.789,2.053,4.435,4.435,5.721,8.5,10,4.435,-1.093,2.053,3.213,0.95,3.213,3.213,0.95,7.075,8.5,4.435,5.721,4.435,2.053,2.053,5.721,3.213,3.213,4.435,3.213,3.213,8.5,5.721,2.053,0.95,2.053,2.053,5.721,8.5,10,8.5,4.435,2.053,-0.097,2.053,2.053,2.053,5.721,4.435,7.075,7.075,4.435,3.213,3.213,2.053,4.435,4.435,4.435,4.435,4.435,7.075,0.95,5.721,0.95,2.053,2.053,3.213,2.053,3.213,10,8.5,4.435,5.721,0.95,0.95,0.95,-0.097,0.95,5.721,5.721,4.435,4.435,4.435,3.213,0.95,5.721,0.95,2.053,5.721,3.213,5.721,7.075,-0.097,-0.097,0.95,3.213,5.721,2.053,8.5,10,8.5,5.721,-1.093,-0.097,-0.097,0.95,2.053,5.721,5.721,8.5,4.435,5.721,2.053,-0.097,2.053,2.053,2.053,3.213,2.053,3.213,4.435,-1.093,-2.936,-1.093,2.053,0.95,4.435,4.435,2.053,10,8.5,-2.038,-1.093,-1.093,0.95,-1.093,-3.789,4.435,7.075,8.5,7.075,0.95,0.95,-1.093,-0.097,0.95,0.95,-2.038,0.95,0.95,-2.038,-1.093,-2.038,-2.038,-2.038,0.95,3.213,0.95,-1.093,10,-2.038,-2.038,-2.038,-1.093,-1.093,-2.038,-3.789,4.435,7.075,8.5,-2.936,-3.789,-2.936,-2.936,-2.936,-2.936,-2.936,-2.936,-2.936,5.721,-2.936,4.435,3.213,-2.936,-2.038,-2.038,-2.936,-2.936,-2.936,10,7.075,-1.093,-0.097,-2.936,-2.936,-2.936,-2.936,-2.038,-2.038,-2.038,-2.038,-2.038,-0.097,-2.038,-2.038,-2.038,-2.038,-6.101,4.435,7.075,-1.093,4.435,0.95,0.95,-0.097,-1.093,-1.093,-1.093,8.5,10,4.435,-2.038,-1.093,-2.038,-0.097,-2.038,-1.093,-2.038,-1.093,-1.093,-1.093,-1.093,-1.093,-1.093,-1.093,-1.093,-0.097,5.721,5.721,8.5,2.053,5.721,0.95,-1.093,-0.097,-0.097,-0.097,5.721,7.075,10,7.075,7.075,-2.936,-0.097,-1.093,-1.093,-0.097,-0.097,-0.097,-0.097,-1.093,-1.093,-0.097,-1.093,0.95,-0.097,4.435,3.213,4.435,8.5,-3.789,-0.097,2.053,-0.097,0.95,0.95,5.721,7.075,8.5,10,3.213,7.075,2.053,2.053,-0.097,2.053,3.213,0.95,0.95,0.95,0.95,0.95,0.95,0.95,0.95,3.213,2.053,5.721,5.721,8.5,7.075,2.053,2.053,2.053,2.053,3.213,3.213,5.721,7.075,10,5.721,2.053,2.053,3.213,2.053,4.435,-0.097,-1.093,3.213,-0.097,2.053,3.213,2.053,3.213,2.053,2.053,2.053,2.053,5.721,7.075,2.053,0.95,3.213,2.053,3.213,2.053,3.213,3.213,5.721,10,5.721,4.435,4.435,3.213,3.213,3.213,3.213,3.213,3.213,0.95,5.721,4.435,3.213,0.95,0.95,0.95,-0.097,-0.097,5.721,7.075,3.213,4.435,4.435,0.95,2.053,0.95,4.435,5.721,7.075,10,8.5,4.435,4.435,2.053,0.95,2.053,2.053,2.053,3.213,4.435,-4.6,5.721,-0.097,0.95,-0.097,-0.097,-1.093,3.213,5.721,7.075,5.721,5.721,-0.097,-0.097,-0.097,0.95,3.213,7.075,8.5,10,8.5,5.721,0.95,0.95,0.95,-1.093,0.95,0.95,0.95,0.95,4.435,-1.093,-1.093,-2.038,-2.038,-1.093,0.95,-1.093,5.721,7.075,7.075,-1.093,-1.093,-1.093,-2.038,-0.097,-1.093,4.435,8.5,10,8.5,-0.097,-3.789,-0.097,-6.101,0.95,-1.093,-0.097,-0.097,-0.097,-2.038,-2.038,-2.038,-2.038,-3.789,-2.038,0.95,2.053,7.075,8.5,-2.038,-2.936,-2.038,-2.038,-1.093,-0.097,2.053,0.95,7.075,10};
 
-
-}
-
-void Tag::init_state_value(){
-    std::ifstream infile( "V_from_policyIteration_Tag.txt" );
-    double n;
-    bool a = infile.peek() == std::ifstream::traits_type::eof();
-    std::string line;
-    while (std::getline(infile, line)) {
-        std::istringstream iss(line);
-        iss >> n;
-        state_value_.push_back(n);
     }
-}
 
-Tag::Tag(string params_file) :
-	BaseTag(params_file) {
-	same_loc_obs_ = floor_.NumCells();
-	obs_.resize(NumStates());
-	for (int rob = 0; rob < floor_.NumCells(); rob++) {
-		for (int opp = 0; opp < floor_.NumCells(); opp++) {
-			int s = RobOppIndicesToStateIndex(rob, opp);
-			obs_[s] = (rob == opp ? same_loc_obs_ : rob);
-		}
-	}
-  robot_pos_unknown_ = false;
-}
+    Tag::Tag(string params_file) :
+            BaseTag(params_file) {
+        same_loc_obs_ = floor_.NumCells();
+        obs_.resize(NumStates());
+        for (int rob = 0; rob < floor_.NumCells(); rob++) {
+            for (int opp = 0; opp < floor_.NumCells(); opp++) {
+                int s = RobOppIndicesToStateIndex(rob, opp);
+                obs_[s] = rob;
+//			obs_[s] = (rob == opp ? same_loc_obs_ : rob); //TODO: TB original
+            }
+        }
+        robot_pos_unknown_ = false;
+    }
 
-bool Tag::Step(State& state, double random_num, ACT_TYPE action, double& reward,
-	OBS_TYPE& obs) const {
-	bool terminal = BaseTag::Step(state, random_num, action, reward);
+    OBS_TYPE Tag::getObs(const State& s, ACT_TYPE action) const{
+        if(action == 4){
+            const TagState& state = static_cast<const TagState&>(s);
+            int rob = rob_[state.state_id];
+            int opp = opp_[state.state_id];
+            return (rob == opp ? same_loc_obs_ : rob);
+        }
+        return obs_[s.state_id];
 
-	obs = obs_[state.state_id];
+    }
 
-	return terminal;
-}
+    bool Tag::Step(State& state, double random_num, ACT_TYPE action, double& reward,
+                   OBS_TYPE& obs) const {
+        bool terminal = BaseTag::Step(state, random_num, action, reward);
+        obs = getObs(state, action);
+//    obs = obs_[state.state_id];
 
-double Tag::ObsProb(OBS_TYPE obs, const State& s, ACT_TYPE a) const {
-	const TagState& state = static_cast<const TagState&>(s);
+        return terminal;
+    }
 
-	return obs == obs_[state.state_id];
-}
+    double Tag::ObsProb(OBS_TYPE obs, const State& s, ACT_TYPE a) const {
+        const TagState& state = static_cast<const TagState&>(s);
 
-Belief* Tag::ExactPrior() const {
-	vector<State*> particles;
-	for (int rob = 0; rob < floor_.NumCells(); rob++) {
-		for (int opp = 0; opp < floor_.NumCells(); opp++) {
-			TagState* state = static_cast<TagState*>(BaseTag::Allocate(
-				RobOppIndicesToStateIndex(rob, opp),
-				1.0 / floor_.NumCells() / floor_.NumCells()));
-			particles.push_back(state);
-		}
-	}
+        return obs == getObs(s, a);
+    }
 
-	TagBelief* belief = new TagBelief(particles, this);
-	belief->state_indexer(this);
-	return belief;
-}
+    Belief* Tag::ExactPrior() const {
+        vector<State*> particles;
+        for (int rob = 0; rob < floor_.NumCells(); rob++) {
+            for (int opp = 0; opp < floor_.NumCells(); opp++) {
+                TagState* state = static_cast<TagState*>(BaseTag::Allocate(
+                        RobOppIndicesToStateIndex(rob, opp),
+                        1.0 / floor_.NumCells() / floor_.NumCells()));
+                particles.push_back(state);
+            }
+        }
 
-Belief* Tag::ApproxPrior() const {
-	vector<State*> particles;
+        TagBelief* belief = new TagBelief(particles, this);
+        belief->state_indexer(this);
+        return belief;
+    }
 
-	int N = floor_.NumCells();
-	double wgt = 1.0 / N / N;
-	for (int rob = 0; rob < N; rob++) {
-		for (int opp = 0; opp < N; opp++) {
-			TagState* state = static_cast<TagState*>(BaseTag::Allocate(
-				RobOppIndicesToStateIndex(rob, opp), wgt));
-			particles.push_back(state);
-		}
-	}
+    Belief* Tag::ApproxPrior() const {
+        vector<State*> particles;
 
-	ParticleBelief* belief = new ParticleBelief(particles, this);
-	belief->state_indexer(this);
-	return belief;
-}
+        int N = floor_.NumCells();
+        double wgt = 1.0 / N / N;
+        for (int rob = 0; rob < N; rob++) {
+            for (int opp = 0; opp < N; opp++) {
+                TagState* state = static_cast<TagState*>(BaseTag::Allocate(
+                        RobOppIndicesToStateIndex(rob, opp), wgt));
+                particles.push_back(state);
+            }
+        }
 
-Belief* Tag::InitialBelief(const State* start, string type) const {
-	Belief* prior = NULL;
-	if (type == "EXACT") {
-		prior = ExactPrior();
-	} else if (type == "DEFAULT" || type == "PARTICLE") {
-		prior = ApproxPrior();
-	} else {
-		cerr << "[Tag::InitialBelief] Unsupported belief type: " << type << endl;
-		exit(0);
-	}
+        ParticleBelief* belief = new ParticleBelief(particles, this);
+        belief->state_indexer(this);
+        return belief;
+    }
 
-	return prior;
-}
+    Belief* Tag::InitialBelief(const State* start, string type) const {
+        Belief* prior = NULL;
+        if (type == "EXACT") {
+            prior = ExactPrior();
+        } else if (type == "DEFAULT" || type == "PARTICLE") {
+            prior = ApproxPrior();
+        } else {
+            cerr << "[Tag::InitialBelief] Unsupported belief type: " << type << endl;
+            exit(0);
+        }
 
-void Tag::Observe(const Belief* belief, ACT_TYPE action,
-	map<OBS_TYPE, double>& obss) const {
-	const vector<State*>& particles =
-		static_cast<const ParticleBelief*>(belief)->particles();
-	for (int i = 0; i < particles.size(); i++) {
-		TagState* state = static_cast<TagState*>(particles[i]);
-		const vector<State>& distribution = transition_probabilities_[GetIndex(
-			state)][action];
-		for (int i = 0; i < distribution.size(); i++) {
-			const State& next = distribution[i];
-			OBS_TYPE obs = obs_[next.state_id];
-			double p = state->weight * next.weight;
-			obss[obs] += p;
-		}
-	}
-}
+        return prior;
+    }
 
-void Tag::PrintObs(const State& state, OBS_TYPE obs, ostream& out) const {
-	if (obs == floor_.NumCells()) {
-		out << "On opponent" << endl;
-	} else {
-		Coord rob = floor_.GetCell(obs);
-		out << "Rob at (" << rob.x << ", " << rob.y << ")" << endl;
-	}
-}
+    void Tag::Observe(const Belief* belief, ACT_TYPE action,
+                      map<OBS_TYPE, double>& obss) const {
+        const vector<State*>& particles =
+                static_cast<const ParticleBelief*>(belief)->particles();
+        for (int i = 0; i < particles.size(); i++) {
+            TagState* state = static_cast<TagState*>(particles[i]);
+            const vector<State>& distribution = transition_probabilities_[GetIndex(
+                    state)][action];
+            for (int i = 0; i < distribution.size(); i++) {
+                const State& next = distribution[i];
+                OBS_TYPE obs = obs_[next.state_id];
+                double p = state->weight * next.weight;
+                obss[obs] += p;
+            }
+        }
+    }
 
+    void Tag::PrintObs(const State& state, OBS_TYPE obs, ostream& out) const {
+        if (obs == floor_.NumCells()) {
+            out << "On opponent" << endl;
+        } else {
+            Coord rob = floor_.GetCell(obs);
+            out << "Rob at (" << rob.x << ", " << rob.y << ")" << endl;
+        }
+    }
 
 double Tag::stateValue(State* state) const{  //TB
     return state_value_[state->state_id];

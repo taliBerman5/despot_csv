@@ -26,7 +26,7 @@ public:
 		OBS_TYPE& obs) const;
 
 	double ObsProb(OBS_TYPE obs, const State& state, ACT_TYPE action) const;
-
+    OBS_TYPE getObs(const State& s, ACT_TYPE action) const; //TB
 	Belief* ExactPrior() const;
 	Belief* ApproxPrior() const;
 	Belief* InitialBelief(const State* start, std::string type = "DEFAULT") const;
