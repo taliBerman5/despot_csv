@@ -329,6 +329,8 @@ public:
 	inline virtual DSPOMDP* MakeCopy() const {
 		return NULL;
 	}
+
+    virtual double stateValue(State *pState) const;
 };
 
 /* =============================================================================

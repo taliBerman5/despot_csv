@@ -388,7 +388,7 @@ namespace despot {
                 vnodes[obs] = CreateVNode(vnode->depth() + 1, particle, prior,
                                           model);
                 reward += Globals::Discount()
-                          * Rollout(particle, vnode->depth() + 1, model, prior);
+                          * model->stateValue(particle);
             }
             prior->PopLast();
         }

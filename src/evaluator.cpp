@@ -63,7 +63,7 @@ namespace despot {
          * =========================*/
         string solver_type = ChooseSolver();
         bool search_solver;
-        int num_runs = 1;
+        int num_runs = 20;
         string world_type = "pomdp";
         string belief_type = "DEFAULT";
         int time_limit = -1;
@@ -97,7 +97,7 @@ namespace despot {
          * =========================*/
         //TB file
         ofstream rollout_file;
-        string rollout_file_name = solver_type+"_"+typeid(*model).name()+"_rollouts_uniform.csv";
+        string rollout_file_name = solver_type+"_"+typeid(*model).name()+"_rollouts_uniform_test.csv";
         rollout_file.open (rollout_file_name);
         //TB file
 
@@ -122,7 +122,7 @@ namespace despot {
          * run evaluation
          * =========================*/
 
-        string file_name = solver_type+"_"+typeid(*model).name()+"_test.txt";
+        string file_name = solver_type+"_"+typeid(*model).name()+"_90sim.txt";
         myfile.open (file_name);
         myfile << "round__discounted_reward/round_undiscounted_reward\n";
 

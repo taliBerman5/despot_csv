@@ -3,6 +3,11 @@
 #include "tag.h"
 #include <despot/util/coord.h>
 #include <despot/util/floor.h>
+#include <fstream> //TB
+#include <iostream> //TB
+#include <iterator> //TB
+
+
 
 using namespace std;
 
@@ -28,6 +33,18 @@ Tag::Tag() {
 		}
 	}
   robot_pos_unknown_ = false;
+
+
+    if (FILE *fp = fopen("filename", "r"))
+    {
+        char buf[1024];
+        while (size_t len = fread(buf, 1, sizeof(buf), fp))
+        {
+            state_value_.insert(state_value_.end(), buf, buf + len);
+        }
+        fclose(fp);
+    }
+
 }
 
 Tag::Tag(string params_file) :
@@ -131,5 +148,11 @@ void Tag::PrintObs(const State& state, OBS_TYPE obs, ostream& out) const {
 		out << "Rob at (" << rob.x << ", " << rob.y << ")" << endl;
 	}
 }
+
+
+double Tag::stateValue(State* state) const{  //TB
+    return state_value_[state->state_id];
+}
+
 
 } // namespace despot

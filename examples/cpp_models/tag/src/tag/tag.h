@@ -16,6 +16,7 @@ namespace despot {
 class Tag: public BaseTag {
 private:
   std::vector<OBS_TYPE> obs_;
+  std::vector<double> state_value_;
 public:
 	Tag();
 	Tag(std::string params_file);
@@ -33,6 +34,8 @@ public:
 		std::map<OBS_TYPE, double>& obss) const;
 
 	void PrintObs(const State& state, OBS_TYPE obs, std::ostream& out = std::cout) const;
+
+    double stateValue( State* state) const;  //TB
 };
 
 } // namespace despot

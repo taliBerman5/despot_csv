@@ -161,6 +161,10 @@ vector<State*> DSPOMDP::Copy(const vector<State*>& particles) const {
 	return copy;
 }
 
+    double DSPOMDP::stateValue(State *pState) const {
+        return 0;
+    }
+
 /* =============================================================================
  * BeliefMDP classs
  * =============================================================================*/
