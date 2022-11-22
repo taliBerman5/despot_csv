@@ -17,6 +17,7 @@ class Tag: public BaseTag {
 private:
   std::vector<OBS_TYPE> obs_;
   std::vector<double> state_value_;
+  void init_state_value();
 public:
 	Tag();
 	Tag(std::string params_file);
