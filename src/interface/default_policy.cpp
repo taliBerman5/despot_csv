@@ -19,7 +19,7 @@ DefaultPolicy::DefaultPolicy(const DSPOMDP* model, ParticleLowerBound* particle_
 DefaultPolicy::~DefaultPolicy() {
 }
 
-ValuedAction DefaultPolicy::Value(const vector<State*>& particles,
+ValuedAction DefaultPolicy::Value(const vector<State*>& particles,  //TODO: TB - maybe here change to value from value iteration
 	RandomStreams& streams, History& history) const {
 	vector<State*> copy;
 	for (int i = 0; i < particles.size(); i++)

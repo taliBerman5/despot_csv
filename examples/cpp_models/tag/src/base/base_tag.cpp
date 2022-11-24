@@ -89,7 +89,7 @@ public:
 
 		vector<ACT_TYPE> actions;
 		// Compute rob position
-		Coord rob;
+		Coord rob;  //TODO:  TB maybe remove the following to be as in pomcp defualt policy
 		if (tag_model_->same_loc_obs_ != floor_.NumCells()) {
 			rob = tag_model_->MostLikelyRobPosition(particles);
 		} else {

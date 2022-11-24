@@ -179,7 +179,7 @@ namespace despot {
         {
             string blbtype =
                     options[E_BLBTYPE] ? options[E_BLBTYPE].arg : "DEFAULT";
-            string lbtype = options[E_LBTYPE] ? options[E_LBTYPE].arg : "DEFAULT";
+            string lbtype = options[E_LBTYPE] ? options[E_LBTYPE].arg : "DEFAULT"; //TODO TB - maybe change to "SHR";
             ScenarioLowerBound *lower_bound = model->CreateScenarioLowerBound(
                     lbtype, blbtype);
 

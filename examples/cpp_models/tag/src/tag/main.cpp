@@ -30,7 +30,7 @@ public:
   }
 
   std::string ChooseSolver(){
-	  return "POMCP";
+	  return "DESPOT";
   }
 };
 

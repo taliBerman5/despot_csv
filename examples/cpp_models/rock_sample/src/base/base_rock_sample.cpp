@@ -778,7 +778,7 @@ public:
 		if (west_interesting)
 			preferred_actions_.push_back(Compass::WEST);
 
-		for (rock = 0; rock < rs_model_->num_rocks_; rock++) {
+		for (rock = 0; rock < rs_model_->num_rocks_; rock++) {  //TODO: TB maybe remove
 			if (!sampled[rock] && !certain[rock] && abs(counts[rock]) < 2
 				&& measured[rock] < 5) {
 				preferred_actions_.push_back(rock + 1 + rs_model_->E_SAMPLE);
