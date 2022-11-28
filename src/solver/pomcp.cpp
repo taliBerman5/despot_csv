@@ -1,6 +1,7 @@
 #include <despot/solver/pomcp.h>
 #include <despot/util/logging.h>
 #include <iostream>  //TB
+#include <random> //TB
 
 using namespace std;
 
@@ -96,13 +97,19 @@ namespace despot {
         int hist_size = history_.Size();
         bool done = false;
         int num_sims = 0;
+        std::default_random_engine  generator;
+        std::geometric_distribution<int> geo(1.0/Globals::config.search_depth);
         while (true) {
             vector<State*> particles = belief_->Sample(1000);
             for (int i = 0; i < particles.size(); i++) {
                 State* particle = particles[i];
                 logd << "[POMCP::Search] Starting simulation " << num_sims << endl;
 
-                Simulate(particle, root_, model_, prior_);
+
+
+                int search_depth = geo(generator);
+
+                Simulate(particle, root_, model_, prior_, search_depth);
 
                 num_sims++;
                 logd << "[POMCP::Search] " << num_sims << " simulations done" << endl;
@@ -321,10 +328,10 @@ namespace despot {
 
 // static
     double POMCP::Simulate(State* particle, VNode* vnode, const DSPOMDP* model,
-                           POMCPPrior* prior) {
+                           POMCPPrior* prior, int search_depth) {
         assert(vnode != NULL);
 
-        if (vnode->depth() >= Globals::config.search_depth)
+        if (vnode->depth() >= search_depth)
             return 0;//*/ model->GetHeuristicValue(*particle);
 //        double explore_constant = (model->GetMaxReward() - OptimalAction(vnode).value); //TB
         double explore_constant = prior->exploration_constant();
@@ -340,12 +347,12 @@ namespace despot {
             map<OBS_TYPE, VNode*>& vnodes = qnode->children();
             if (vnodes[obs] != NULL) {
                 reward += Globals::Discount()
-                          *  Simulate(particle, vnodes[obs], model, prior); //TODO: TB no discount
+                          *  Simulate(particle, vnodes[obs], model, prior, search_depth); //TODO: TB no discount
             } else { // Rollout upon encountering a node not in curren tree, then add the node
                 vnodes[obs] = CreateVNode(vnode->depth() + 1, particle, prior,
                                           model);
                 reward += Globals::Discount()
-                          *  Rollout(particle, vnode->depth() + 1, model, prior); //TODO: TB no discount
+                          *  Rollout(particle, vnode->depth() + 1, model, prior, search_depth); //TODO: TB no discount
             }
             prior->PopLast();
         }
@@ -387,8 +394,8 @@ namespace despot {
 
 // static
     double POMCP::Rollout(State* particle, int depth, const DSPOMDP* model,
-                          POMCPPrior* prior) {
-        if (depth >= Globals::config.search_depth) {
+                          POMCPPrior* prior, int search_depth) {
+        if (depth >= search_depth) {
             return 0;//*/ model->GetHeuristicValue(*particle);
         }
 
@@ -399,7 +406,7 @@ namespace despot {
         bool terminal = model->Step(*particle, action, reward, obs);
         if (!terminal) {
             prior->Add(action, obs);
-            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior); //TODO: TB no discount
+            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior, search_depth); //TODO: TB no discount
 //            reward += Rollout(particle, depth + 1, model, prior);
             prior->PopLast();
         }

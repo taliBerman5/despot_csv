@@ -103,11 +103,11 @@ namespace despot {
         static VNode* CreateVNode(int depth, const State*, POMCPPrior* prior,
                                   const DSPOMDP* model);
         static double Simulate(State* particle, VNode* root, const DSPOMDP* model,
-                               POMCPPrior* prior);
+                               POMCPPrior* prior, int search_depth);
         static double Simulate(State* particle, RandomStreams& streams,
                                VNode* vnode, const DSPOMDP* model, POMCPPrior* prior);
         static double Rollout(State* particle, int depth, const DSPOMDP* model,
-                              POMCPPrior* prior);
+                              POMCPPrior* prior, int search_depth);
         static double Rollout(State* particle, RandomStreams& streams, int depth,
                               const DSPOMDP* model, POMCPPrior* prior);
         static ValuedAction Evaluate(VNode* root, std::vector<State*>& particles,
