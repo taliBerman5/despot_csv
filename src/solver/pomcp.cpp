@@ -339,13 +339,13 @@ namespace despot {
             prior->Add(action, obs);
             map<OBS_TYPE, VNode*>& vnodes = qnode->children();
             if (vnodes[obs] != NULL) {
-                reward += /*Globals::Discount()
-                          * */ Simulate(particle, vnodes[obs], model, prior); //TODO: TB no discount
+                reward += Globals::Discount()
+                          *  Simulate(particle, vnodes[obs], model, prior); //TODO: TB no discount
             } else { // Rollout upon encountering a node not in curren tree, then add the node
                 vnodes[obs] = CreateVNode(vnode->depth() + 1, particle, prior,
                                           model);
-                reward += /*Globals::Discount()
-                          * */ Rollout(particle, vnode->depth() + 1, model, prior); //TODO: TB no discount
+                reward += Globals::Discount()
+                          *  Rollout(particle, vnode->depth() + 1, model, prior); //TODO: TB no discount
             }
             prior->PopLast();
         }
@@ -399,8 +399,8 @@ namespace despot {
         bool terminal = model->Step(*particle, action, reward, obs);
         if (!terminal) {
             prior->Add(action, obs);
-//            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior); //TODO: TB no discount
-            reward += Rollout(particle, depth + 1, model, prior);
+            reward += Globals::Discount() * Rollout(particle, depth + 1, model, prior); //TODO: TB no discount
+//            reward += Rollout(particle, depth + 1, model, prior);
             prior->PopLast();
         }
 
