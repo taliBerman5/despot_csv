@@ -24,8 +24,7 @@ namespace despot {
         for (int rob = 0; rob < floor_.NumCells(); rob++) {
             for (int opp = 0; opp < floor_.NumCells(); opp++) {
                 int s = RobOppIndicesToStateIndex(rob, opp);
-                obs_[s] = rob;
-//			obs_[s] = (rob == opp ? same_loc_obs_ : rob);  //TODO: TB original
+			obs_[s] = (rob == opp ? same_loc_obs_ : rob);
             }
         }
         robot_pos_unknown_ = false;
@@ -57,8 +56,7 @@ namespace despot {
         for (int rob = 0; rob < floor_.NumCells(); rob++) {
             for (int opp = 0; opp < floor_.NumCells(); opp++) {
                 int s = RobOppIndicesToStateIndex(rob, opp);
-                obs_[s] = rob;
-//			obs_[s] = (rob == opp ? same_loc_obs_ : rob); //TODO: TB original
+			obs_[s] = (rob == opp ? same_loc_obs_ : rob);
             }
         }
         robot_pos_unknown_ = false;
@@ -78,8 +76,7 @@ namespace despot {
     bool Tag::Step(State& state, double random_num, ACT_TYPE action, double& reward,
                    OBS_TYPE& obs) const {
         bool terminal = BaseTag::Step(state, random_num, action, reward);
-        obs = getObs(state, action);
-//    obs = obs_[state.state_id];
+    obs = obs_[state.state_id];
 
         return terminal;
     }
