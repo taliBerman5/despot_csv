@@ -37,14 +37,12 @@ namespace despot {
         newfile.open("numpy_sarsop_space.out",ios::in);
         if (newfile.is_open()) {   //checking whether the file is open
             string tp;
-            vector<vector<double>> alpha_vec;
+            vector<double> alpha_vec;
             while (getline(newfile, tp)) {
                 std::stringstream iss( tp );
                 double number;
-                vector<double> vec;
-                while ( iss >> number )
-                    vec.push_back( number );
-                state_value_.push_back(vec);
+                iss >> number;
+                state_value_.push_back(number);
             }
             newfile.close();
         }
@@ -165,8 +163,7 @@ namespace despot {
     }
 
 double Tag::stateValue(State* state) const{  //TB
-         vector<double> state_values = reinterpret_cast<const vector<double> &>(state_value_[state->state_id]);
-    return *max_element(state_values.begin(), state_values.end());;
+        return this->state_value_[state->state_id];
 }
 
 
