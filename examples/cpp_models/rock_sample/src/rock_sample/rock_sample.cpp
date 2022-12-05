@@ -11,12 +11,22 @@ namespace despot {
 RockSample::RockSample(string map) :
 	BaseRockSample(map) {
 	half_efficiency_distance_ = 20;
+    init_state_value();
 }
 
 RockSample::RockSample(int size, int rocks) :
 	BaseRockSample(size, rocks) {
 	half_efficiency_distance_ = 20;
+    init_state_value();
 }
+
+    void RockSample::init_state_value(){
+        vector<ValuedAction>& values = ComputeOptimalSamplingPolicy();
+       for(int s=0; s < NumStates(); s++){
+           state_value_.push_back(values[s].value);
+       }
+    }
+
 
 bool RockSample::Step(State& state, double rand_num, ACT_TYPE action, double& reward,
 	OBS_TYPE& obs) const {
@@ -119,5 +129,9 @@ void RockSample::PrintObs(const State& state, OBS_TYPE observation,
 		break;
 	}
 }
+
+    double RockSample::stateValue(State* state) const{  //TB
+        return state_value_[state->state_id];
+    }
 
 } // namespace despot

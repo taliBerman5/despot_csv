@@ -17,6 +17,8 @@ class RockSample: public BaseRockSample {
 public:
 	RockSample(std::string map);
 	RockSample(int size, int rocks);
+    std::vector<double> state_value_;
+    void init_state_value();
 
 	bool Step(State& state, double rand_num, ACT_TYPE action, double& reward,
 		OBS_TYPE& obs) const;
@@ -24,6 +26,8 @@ public:
 	double ObsProb(OBS_TYPE obs, const State& state, ACT_TYPE action) const;
 	void PrintObs(const State& state, OBS_TYPE observation,
 		std::ostream& out = std::cout) const;
+
+    double stateValue(State *state) const;
 };
 
 } // namespace despot
