@@ -76,7 +76,7 @@ BaseRockSample::BaseRockSample(int size, int rocks) :
 		InitGeneral();
 	}
 
-	// InitStates();
+	InitStates();  //TB
 }
 
 void BaseRockSample::InitStates() {
@@ -1096,9 +1096,31 @@ double BaseRockSample::Reward(int s, ACT_TYPE a) const {
 		return 0;
 }
 
+    const RockSampleState BaseRockSample::GetRockState(int index) const {  //TB
+        return *states_[index];
+    }
+
+    double BaseRockSample::GetObservation_prob(int state_id, int rock) const { //TB
+        const RockSampleState& rockstate = GetRockState(state_id);
+        double distance = Coord::EuclideanDistance(GetRobPos(&rockstate),
+                                                   rock_pos_[rock]);
+        double efficiency = (1 + pow(2, -distance / half_efficiency_distance_))
+                            * 0.5;
+
+        if (GetRock(&rockstate, rock) & E_GOOD)
+            return efficiency;
+        else
+            return 1 - efficiency;
+    }
+
+
+
 void BaseRockSample::InitializeTransitions() {
-	int num_states = NumStates(), num_actions = NumActions();
+	int num_states = NumStates()-1, num_actions = NumActions();
 	transition_probabilities_.resize(num_states);
+    std::ofstream transition;
+    transition.open ("transition_rockSample_7_8.csv");
+
 	for (int s = 0; s < num_states; s++) {
 		transition_probabilities_[s].resize(num_actions);
 		for (int a = 0; a < num_actions; a++) {
@@ -1106,8 +1128,22 @@ void BaseRockSample::InitializeTransitions() {
 			state.state_id = NextState(s, a);
 			state.weight = 1.0;
 			transition_probabilities_[s][a].push_back(state);
+            int reward = Reward(s, a);
+            transition << "T: " + to_string(a) + " : " + to_string(s) + " : " + to_string(state.state_id) + " 1.0\n";
+            if(reward != 0)
+                transition << "R: " + to_string(a) + " : " + to_string(s) + " : " + to_string(state.state_id) + " : * " + to_string(reward)+"\n";
+            if(a < 5)
+                transition << "O: " + to_string(a) + " : " + to_string(s) + " : 0  1.0\n";
+            else{
+                int rock = a - E_SAMPLE - 1;
+                double obs_prob = GetObservation_prob(s, rock);
+                transition << "O: " + to_string(a) + " : " + to_string(s) + " : 1  " + to_string(obs_prob) + "\n";
+                transition << "O: " + to_string(a) + " : " + to_string(s) + " : 0  " + to_string(1.0 - obs_prob) + "\n";
+            }
+
 		}
 	}
+    transition.close();
 }
 
 const vector<State>& BaseRockSample::TransitionProbability(int s, ACT_TYPE a) const {
