@@ -16,6 +16,7 @@ RockSample::RockSample(string map) :
 RockSample::RockSample(int size, int rocks) :
 	BaseRockSample(size, rocks) {
 	half_efficiency_distance_ = 20;
+    InitializeTransitions(); //TB
 }
 
 bool RockSample::Step(State& state, double rand_num, ACT_TYPE action, double& reward,

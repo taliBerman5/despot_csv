@@ -122,7 +122,8 @@ namespace despot {
          * run evaluation
          * =========================*/
 
-        string file_name = solver_type+"_"+typeid(*model).name()+"_10sim_sarsop_instead_rollout_no_obs_location.txt";
+//        string file_name = solver_type+"_"+typeid(*model).name()+"_10sim_sarsop_instead_rollout_no_obs_location_test.txt";
+        string file_name = solver_type+"_"+typeid(*model).name()+"_test.txt";
         myfile.open (file_name);
         myfile << "round__discounted_reward/round_undiscounted_reward\n";
 

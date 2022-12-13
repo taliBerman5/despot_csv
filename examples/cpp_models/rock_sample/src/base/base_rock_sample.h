@@ -154,6 +154,9 @@ protected:
 	int CoordToIndex(Coord c) const;
 	std::vector<ValuedAction>& ComputeOptimalSamplingPolicy() const;
 	RockSampleState* MajorityRockSampleState(const std::vector<State*>& particles) const;
+
+    double GetObservation_prob(int state_id, int rock) const; //TB
+    const RockSampleState GetRockState(int index) const; //TB
 };
 
 } // namespace despot
