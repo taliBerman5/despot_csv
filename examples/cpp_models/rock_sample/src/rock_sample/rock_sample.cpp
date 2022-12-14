@@ -16,10 +16,29 @@ RockSample::RockSample(string map) :
 RockSample::RockSample(int size, int rocks) :
 	BaseRockSample(size, rocks) {
 	half_efficiency_distance_ = 20;
-    InitializeTransitions(); //TB
+//    InitializeTransitions(); //TB
+    init_state_value();
 }
 
-bool RockSample::Step(State& state, double rand_num, ACT_TYPE action, double& reward,
+
+void RockSample::init_state_value() {
+    fstream newfile;
+    newfile.open("numpy_sarsop_space.out", ios::in);
+    if (newfile.is_open()) {   //checking whether the file is open
+        string tp;
+        vector<double> alpha_vec;
+        while (getline(newfile, tp)) {
+            std::stringstream iss(tp);
+            double number;
+            iss >> number;
+            state_value_.push_back(number);
+        }
+        newfile.close();
+    }
+}
+
+
+        bool RockSample::Step(State& state, double rand_num, ACT_TYPE action, double& reward,
 	OBS_TYPE& obs) const {
 	RockSampleState& rockstate = static_cast<RockSampleState&>(state);
 	reward = 0;
@@ -120,5 +139,10 @@ void RockSample::PrintObs(const State& state, OBS_TYPE observation,
 		break;
 	}
 }
+
+double RockSample::stateValue(State* state) const{  //TB
+    return this->state_value_[state->state_id];
+}
+
 
 } // namespace despot
