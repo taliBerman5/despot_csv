@@ -8,9 +8,8 @@ APPL Online is a C++ implementation of the DESPOT algorithm for online POMDP pla
 
 Clone the repository from Github (**Recommended**):
 ```bash
-$ git clone https://github.com/AdaCompNUS/despot.git
+$ git clone https://github.com/taliBerman5/despot_csv.git
 ```
-OR manually download the [Zip Files](https://github.com/AdaCompNUS/despot/archive/master.zip). For instructions, use this online Github README. 
 
 ## Installation
 
