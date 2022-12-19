@@ -4,42 +4,6 @@
 
 APPL Online is a C++ implementation of the DESPOT algorithm for online POMDP planning [1]. It takes as input a POMDP model in the POMDPX file format. It also provides an API for interfacing directly with a blackbox simulator. 
 
-For bug reports and suggestions, please email <motion@comp.nus.edu.sg>.
-
-[1] N. Ye, A. Somani, D. Hsu, and W. Lee. [**DESPOT: Online POMDP planning with regularization**](http://bigbird.comp.nus.edu.sg/m2ap/wordpress/wp-content/uploads/2017/08/jair14.pdf). J. Artificial Intelligence Research, 58:231–266, 2017.
-
-
-
-## Table of Contents
-
-* [Requirements](#requirements)
-* [Download](#download)
-* [Installation](#installation)
-* [Quick Start](#quick-start)
-* [Documentation](#documentation)
-* [Using DESPOT with External Systems](#using-despot-with-external-systems)
-* [Package Contents](#package-contents)
-* [CMakeLists](#cmakelists)
-* [Acknowledgements](#acknowledgements)
-* [Bugs and Suggestions](#bugs-and-suggestions)
-* [Release Notes](#release-notes)
-
-## Requirements
-
-Tested Operating Systems:
-
-<!--| Linux 14.04| OS X (10.1)  | Windows  |
-|:------------- |:-------------:|: -----:|
-|[![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges)| [![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges) | Not Supported |-->
-
-| Linux       | OS X
-| :-------------: |:-------------:|
-|[![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges)      | [![Build Status](https://semaphoreapp.com/api/v1/projects/d4cca506-99be-44d2-b19e-176f36ec8cf1/128505/shields_badge.svg)](https://semaphoreapp.com/boennemann/badges) 
-
-Tested Compilers: gcc | g++ 4.2.1 or above
-
-Tested Hardware: Intel Core i7 CPU, 2.0 GB RAM
-
 ## Download
 
 Clone the repository from Github (**Recommended**):
@@ -89,34 +53,6 @@ performance for the tiger problem specified in C++. See [doc/Usage.txt](doc/usag
 Most of options in [doc/Usage.txt](doc/usage.txt) can also be specified the programmatically, see [include/despot/config.h](include/despot/config.h) for the global parameters to use, and the `InitializeDefaultParameters` function in [this section](doc/cpp_model_doc/Tutorial%20on%20Using%20DESPOT%20with%20cpp%20model.md#4-running-the-planning) for an example.
 
 
-## Documentation
-
-Documentation can be found in the "[doc](doc/)" directory. 
-
-For a description of our example domains and more POMDP problems see [the POMDP page](http://www.pomdp.org/examples/).
-
-## Using DESPOT with External Systems
-
-An example of integrating DESPOT with an external Gazebo simulator can be found in [the DESPOT tutorials page](https://github.com/AdaCompNUS/despot_tutorials.git).
-
-## Package Contents
-
-```
-Makefile                  Makefile for compiling the solver library
-README.md                 Overview
-include                   Header files
-src/core                  Core data structures for the solvers
-src/solvers               Solvers, including despot, pomcp and aems
-src/pomdpx                Pomdpx and its parser
-src/util                  Math and logging utilities
-license                   Licenses and attributions
-examples/cpp_models       POMDP models implemented in C++
-examples/pomdpx_models    POMDP models implemented in pomdpx
-doc/pomdpx_model_doc      Documentation for POMDPX file format
-doc/cpp_model_doc         Documentation for implementing POMDP models in C++
-doc/usage.txt             Explanation of command-line options
-doc/eclipse_guide.md      Guide for using Eclipse IDE for development
-```
 
 ## CMakeLists
 
@@ -147,21 +83,4 @@ target_link_libraries("YOUR_PROJECT_NAME"
 )
 ```
 
-## More Resources
-**HyP-DESPOT**: A parallel belief tree search algorithm that integrates DESPOT with both CPU and GPU parallelization. Check out the [paper](https://journals.sagepub.com/doi/abs/10.1177/0278364920937074) and the [code](https://github.com/AdaCompNUS/despot_tutorials.git).
-
-## Acknowledgements
-
-Pocman implementation and memorypool.h in the package are based on David
-Silver's [POMCP code](http://www0.cs.ucl.ac.uk/staff/D.Silver/web/Applications.html)
-
-## Bugs and Suggestions
-Please use the issue tracker.
-
-## Release Notes
-2015/09/28 Initial release.
-
-2017/03/07 Public release. Revised documentation.
-
-2018/09/20 New API release.
 
