@@ -6,7 +6,7 @@ The Sarsop files is located in
 despot_csv/cmake-build-debug/examples/cpp_models/
 ```
 
-In Tag world there are more than 1 Sarsop value files. To change the file go to 
+In Tag world there are more than one Sarsop value files, To change the file go to 
 ```
 despot_csv/examples/cpp_models/tag/src/tag/tag.cpp 
 ```
