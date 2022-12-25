@@ -86,6 +86,8 @@ namespace despot {
 
 
     ValuedAction POMCP::Search(double timeout) {
+        std::default_random_engine  generator;
+        std::geometric_distribution<int> geo(1.0/Globals::config.search_depth);
         double start_cpu = clock(), start_real = get_time_second();
 
         if (root_ == NULL) {
@@ -97,8 +99,6 @@ namespace despot {
         int hist_size = history_.Size();
         bool done = false;
         int num_sims = 0;
-        std::default_random_engine  generator;
-        std::geometric_distribution<int> geo(1.0/Globals::config.search_depth);
         while (true) {
             vector<State*> particles = belief_->Sample(1000);
             for (int i = 0; i < particles.size(); i++) {
