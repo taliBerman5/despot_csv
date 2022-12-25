@@ -34,7 +34,7 @@ namespace despot {
 
     void Tag::init_state_value() {
         fstream newfile;
-        newfile.open("sarsop_noObs_minus2.out",ios::in);
+        newfile.open("sarsop_noObs.out",ios::in);
         if (newfile.is_open()) {   //checking whether the file is open
             string tp;
             vector<double> alpha_vec;
