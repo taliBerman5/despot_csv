@@ -1,4 +1,4 @@
-# Approximate POMDP Planning Online (APPL Online) Toolkit
+# Approximate POMDP Planning Online 
 
 [Copyright &copy; 2014-2018 by National University of Singapore](http://motion.comp.nus.edu.sg/).
 
