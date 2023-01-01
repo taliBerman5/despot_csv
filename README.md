@@ -23,9 +23,29 @@ To change more parameters (like search depth) go to include/config.h
 
 Pomcp Solver implemention is under src/solver/pomcp.cpp 
 
+# Experiment wrapper
+
+`runexp` is a shell script that wraps an experiment and adds a line to the CSV-formatted log.
+For example, running
+
+	runexp -l tag.log tag/tag --runs 100
+
+Will add line
+
+    N6despot3TagE,90,90,5,-9.22297,1.87514,-11.4,3.34186,110.938
+
+to file `tag.log`. If the log file is empty, the header is added first, so the resulting 
+file may look like
+
+	model,depth,steps,runs,drmean,drstd,urmean,urstd,cputime
+	N6despot3TagE,90,90,5,-8.46979,2.57059,-12.2,5.79931,114.888
+	N6despot3TagE,90,90,5,-3.28042,2.83195,-2.6,2.94754,65.013
+	...
 
 
-## Brunches
+More fields can be added if desired.
+
+## Branches
 ```
 value_instead_rollout
 value_instead_rollout_no_obs
